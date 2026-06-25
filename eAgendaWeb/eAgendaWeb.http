@@ -1,0 +1,6 @@
+@eAgendaWeb_HostAddress = http://localhost:5037
+
+GET {{eAgendaWeb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
