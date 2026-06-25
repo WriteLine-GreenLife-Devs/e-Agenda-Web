@@ -4,6 +4,11 @@ using eAgendaWeb.Compartilhado.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if(builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+
 // Configuração de Dependências (Dependency Injection)
 builder.Services.AddInfraRepositories();
 
