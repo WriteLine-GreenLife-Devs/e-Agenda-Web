@@ -1,4 +1,5 @@
 using eAgendaWeb.Compartilhado.Aplicacao.Logging;
+using eAgendaWeb.Modulos.ModuloContatos.Aplicacao;
 
 namespace eAgendaWeb.Compartilhado.Aplicacao;
 
@@ -13,5 +14,6 @@ public static class InjecaoDependencia
         services.AddSerilogLogger(configuration, logging);
 
         // services.AddScoped<ServicoExemplo>();
+        services.AddScoped<ServicoContato>();
     }
 }
