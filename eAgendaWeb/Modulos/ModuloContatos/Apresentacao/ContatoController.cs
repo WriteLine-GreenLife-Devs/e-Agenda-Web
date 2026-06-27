@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eAgendaWeb.Modulos.ModuloContatos.Apresentacao;
 
-public class ContatoController(ServicoContato servicoContato, IMapper mapeador) : Controller
+public class ContatosController(ServicoContato servicoContato, IMapper mapeador) : Controller
 {
 
     [HttpGet]

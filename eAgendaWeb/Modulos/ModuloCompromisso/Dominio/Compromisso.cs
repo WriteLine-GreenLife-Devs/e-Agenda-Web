@@ -51,11 +51,14 @@ public sealed class Compromisso : EntidadeBase<Compromisso>
         if (string.IsNullOrWhiteSpace(DataOcorrencia.ToString()))
             erros.Add("O campo \"Data de Ocorrência\" deve ser preenchido.");
 
-        else if (DataOcorrencia < DateTime.Now)
+        else if (DataOcorrencia < DateTime.Now.Date)
             erros.Add("O campo \"Data de Ocorrência\" deve ser uma data futura.");
 
         if (string.IsNullOrWhiteSpace(HoraInicio.ToString()))
             erros.Add("O campo \"Hora de Início\" deve ser preenchido.");
+
+        else if (DataOcorrencia.Date == DateTime.Now.Date && HoraInicio < DateTime.Now.TimeOfDay)
+            erros.Add("O campo \"Hora de Início\" deve ser um horário futuro.");
 
         if (string.IsNullOrWhiteSpace(HoraTermino.ToString()))
             erros.Add("O campo \"Hora de Término\" deve ser preenchido.");

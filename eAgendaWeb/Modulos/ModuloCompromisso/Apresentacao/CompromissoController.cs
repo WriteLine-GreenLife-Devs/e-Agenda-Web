@@ -2,13 +2,22 @@ using AutoMapper;
 using eAgendaWeb.Compartilhado.Apresentacao.Extensions;
 using eAgendaWeb.Modulos.ModuloCompromisso.Aplicacao;
 using eAgendaWeb.Modulos.ModuloCompromisso.Dominio;
+using eAgendaWeb.Modulos.ModuloContatos.Aplicacao;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace eAgendaWeb.Modulos.ModuloCompromisso.Apresentacao;
 
-public class CompromissoController(ServicoCompromisso servicoCompromisso, IMapper mapeador) : Controller
+public class CompromissoController(ServicoCompromisso servicoCompromisso, ServicoContato servicoContato, IMapper mapeador) : Controller
 {
+    private IEnumerable<SelectListItem> ObterOpcoesContatos()
+    {
+        return servicoContato.SelecionarTodos()
+            .Select(c => new SelectListItem(c.Nome, c.Id.ToString()))
+            .ToList();
+    }
+
     [HttpGet]
     public ActionResult Listar()
     {
@@ -26,7 +35,8 @@ public class CompromissoController(ServicoCompromisso servicoCompromisso, IMappe
             DataOcorrencia: DateTime.Now.Date,
             HoraInicio: TimeSpan.Zero,
             HoraTermino: TimeSpan.Zero,
-            TipoCompromisso: TipoCompromisso.Presencial
+            TipoCompromisso: TipoCompromisso.Presencial,
+            Contatos: ObterOpcoesContatos()
         );
 
         return View(cadastrarVm);
@@ -35,6 +45,8 @@ public class CompromissoController(ServicoCompromisso servicoCompromisso, IMappe
     [HttpPost]
     public ActionResult Cadastrar(CadastrarCompromissoViewModel cadastrarVm)
     {
+        cadastrarVm = cadastrarVm with { Contatos = ObterOpcoesContatos() };
+
         if (!ModelState.IsValid)
             return View(cadastrarVm);
 
@@ -62,7 +74,10 @@ public class CompromissoController(ServicoCompromisso servicoCompromisso, IMappe
             return RedirectToAction(nameof(Listar));
         }
 
-        EditarCompromissoViewModel editarVm = mapeador.Map<EditarCompromissoViewModel>(resultado.Value);
+        EditarCompromissoViewModel editarVm = mapeador.Map<EditarCompromissoViewModel>(resultado.Value) with
+        {
+            Contatos = ObterOpcoesContatos()
+        };
 
         return View(editarVm);
     }
@@ -70,6 +85,8 @@ public class CompromissoController(ServicoCompromisso servicoCompromisso, IMappe
     [HttpPost]
     public ActionResult Editar(EditarCompromissoViewModel editarVm)
     {
+        editarVm = editarVm with { Contatos = ObterOpcoesContatos() };
+
         if (!ModelState.IsValid)
             return View(editarVm);
 

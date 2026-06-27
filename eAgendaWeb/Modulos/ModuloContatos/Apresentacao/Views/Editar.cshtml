@@ -12,31 +12,31 @@
 
     <div class="mb-3">
         <label asp-for="Nome" class="form-label fw-semibold text-primary text-uppercase small">Nome</label>
-        <input asp-for="Nome" type="text" class="form-control">
+        <input asp-for="Nome" type="text" class="form-control" placeholder="Ex: João Silva">
         <span asp-validation-for="Nome" class="text-danger small fw-semibold"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Telefone" class="form-label fw-semibold text-primary text-uppercase small">Telefone</label>
-        <input asp-for="Telefone" type="text" class="form-control">
+        <input asp-for="Telefone" type="text" class="form-control" placeholder="Ex: (49) 9 9999-9999">
         <span asp-validation-for="Telefone" class="text-danger small fw-semibold"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Email" class="form-label fw-semibold text-primary text-uppercase small">Email</label>
-        <input asp-for="Email" type="email" class="form-control">
+        <input asp-for="Email" type="email" class="form-control" placeholder="Ex: joao@email.com">
         <span asp-validation-for="Email" class="text-danger small fw-semibold"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Cargo" class="form-label fw-semibold text-primary text-uppercase small">Cargo</label>
-        <input asp-for="Cargo" type="text" class="form-control">
+        <label asp-for="Cargo" class="form-label fw-semibold text-primary text-uppercase small">Cargo <span class="text-muted fw-normal">(OPCIONAL)</span></label>
+        <input asp-for="Cargo" type="text" class="form-control" placeholder="Ex: Analista de Vendas">
         <span asp-validation-for="Cargo" class="text-danger small fw-semibold"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Empresa" class="form-label fw-semibold text-primary text-uppercase small">Empresa</label>
-        <input asp-for="Empresa" type="text" class="form-control">
+        <label asp-for="Empresa" class="form-label fw-semibold text-primary text-uppercase small">Empresa <span class="text-muted fw-normal">(OPCIONAL)</span></label>
+        <input asp-for="Empresa" type="text" class="form-control" placeholder="Ex: Acme Corp">
         <span asp-validation-for="Empresa" class="text-danger small fw-semibold"></span>
     </div>
 

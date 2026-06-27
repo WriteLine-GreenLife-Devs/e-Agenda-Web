@@ -42,21 +42,23 @@
         <span asp-validation-for="TipoCompromisso" class="text-danger small fw-semibold"></span>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3" id="local-container">
         <label asp-for="Local" class="form-label fw-semibold text-primary text-uppercase small">Local</label>
-        <input asp-for="Local" type="text" class="form-control">
+        <input asp-for="Local" type="text" class="form-control" placeholder="Ex: Sala 301, prédio principal">
         <span asp-validation-for="Local" class="text-danger small fw-semibold"></span>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3" id="link-container" style="display:none;">
         <label asp-for="Link" class="form-label fw-semibold text-primary text-uppercase small">Link</label>
-        <input asp-for="Link" type="url" class="form-control">
+        <input asp-for="Link" type="url" class="form-control" placeholder="Ex: https://meet.google.com/abc-defg-hij">
         <span asp-validation-for="Link" class="text-danger small fw-semibold"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="ContatoId" class="form-label fw-semibold text-primary text-uppercase small">Contato (opcional)</label>
-        <input asp-for="ContatoId" type="text" class="form-control" placeholder="GUID do contato">
+        <label asp-for="ContatoId" class="form-label fw-semibold text-primary text-uppercase small">Contato<span class="text-muted fw-normal">(OPCIONAL)</span></label>
+        <select asp-for="ContatoId" asp-items="Model.Contatos" class="form-select">
+            <option value="">Nenhum contato selecionado</option>
+        </select>
         <span asp-validation-for="ContatoId" class="text-danger small fw-semibold"></span>
     </div>
 
@@ -65,3 +67,25 @@
         <button class="btn btn-primary rounded-pill px-4" type="submit">Confirmar</button>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        const tipoSelect = document.querySelector('[name="TipoCompromisso"]');
+        const localContainer = document.getElementById('local-container');
+        const linkContainer = document.getElementById('link-container');
+
+        function atualizarCampos() {
+            const value = tipoSelect.value;
+            if (value === 'Remoto') {
+                localContainer.style.display = 'none';
+                linkContainer.style.display = 'block';
+            } else {
+                localContainer.style.display = 'block';
+                linkContainer.style.display = 'none';
+            }
+        }
+
+        tipoSelect.addEventListener('change', atualizarCampos);
+        atualizarCampos();
+    </script>
+}

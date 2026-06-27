@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using eAgendaWeb.Modulos.ModuloCompromisso.Dominio;
 
 namespace eAgendaWeb.Modulos.ModuloCompromisso.Apresentacao;
@@ -37,7 +38,8 @@ public record CadastrarCompromissoViewModel(
 
     string? Local = null,
     string? Link = null,
-    Guid? ContatoId = null
+    Guid? ContatoId = null,
+    IEnumerable<SelectListItem>? Contatos = null
 );
 
 public record EditarCompromissoViewModel(
@@ -64,7 +66,8 @@ public record EditarCompromissoViewModel(
 
     string? Local = null,
     string? Link = null,
-    Guid? ContatoId = null
+    Guid? ContatoId = null,
+    IEnumerable<SelectListItem>? Contatos = null
 );
 
 public record ExcluirCompromissoViewModel(
