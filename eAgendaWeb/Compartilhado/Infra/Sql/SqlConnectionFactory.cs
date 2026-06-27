@@ -4,7 +4,7 @@ namespace eAgendaWeb.Compartilhado.Infra.Sql;
 
 public sealed class SqlConnectionFactory(IConfiguration configuration) : ISqlConnectionFactory
 {
-    private const string NomeConnectionString = "ControleDeMedicamentosWeb";
+    private const string NomeConnectionString = "eAgendaWeb";
 
     // ConnectionString = Endereço do banco de dados local/remoto que vamos usar
     public SqlConnection CreateConnection()
