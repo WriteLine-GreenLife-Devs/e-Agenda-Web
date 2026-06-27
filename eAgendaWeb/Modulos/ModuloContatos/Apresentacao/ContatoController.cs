@@ -1,12 +1,13 @@
 using AutoMapper;
 using eAgendaWeb.Compartilhado.Apresentacao.Extensions;
+using eAgendaWeb.Modulos.ModuloCompromisso.Aplicacao;
 using eAgendaWeb.Modulos.ModuloContatos.Aplicacao;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eAgendaWeb.Modulos.ModuloContatos.Apresentacao;
 
-public class ContatoController(ServicoContato servicoContato, IMapper mapeador) : Controller
+public class ContatosController(ServicoContato servicoContato, IMapper mapeador) : Controller
 {
 
     [HttpGet]

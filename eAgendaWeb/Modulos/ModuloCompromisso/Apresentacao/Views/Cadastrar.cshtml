@@ -1,0 +1,91 @@
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Cadastro de Compromisso";
+}
+
+@model CadastrarCompromissoViewModel;
+
+<form class="card border-primary-subtle shadow-sm mx-auto p-4" style="max-width: 620px;" asp-action="Cadastrar" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger small fw-semibold mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="Assunto" class="form-label fw-semibold text-primary text-uppercase small">Assunto</label>
+        <input asp-for="Assunto" type="text" class="form-control">
+        <span asp-validation-for="Assunto" class="text-danger small fw-semibold"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DataOcorrencia" class="form-label fw-semibold text-primary text-uppercase small">Data de Ocorrência</label>
+        <input asp-for="DataOcorrencia" type="date" class="form-control">
+        <span asp-validation-for="DataOcorrencia" class="text-danger small fw-semibold"></span>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="HoraInicio" class="form-label fw-semibold text-primary text-uppercase small">Hora de Início</label>
+            <input asp-for="HoraInicio" type="time" class="form-control">
+            <span asp-validation-for="HoraInicio" class="text-danger small fw-semibold"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="HoraTermino" class="form-label fw-semibold text-primary text-uppercase small">Hora de Término</label>
+            <input asp-for="HoraTermino" type="time" class="form-control">
+            <span asp-validation-for="HoraTermino" class="text-danger small fw-semibold"></span>
+        </div>
+    </div>
+
+    <div class="mb-3 mt-3">
+        <label asp-for="TipoCompromisso" class="form-label fw-semibold text-primary text-uppercase small">Tipo de Compromisso</label>
+        <select asp-for="TipoCompromisso" class="form-select">
+            <option value="Presencial">Presencial</option>
+            <option value="Remoto">Remoto</option>
+        </select>
+        <span asp-validation-for="TipoCompromisso" class="text-danger small fw-semibold"></span>
+    </div>
+
+    <div class="mb-3" id="local-container">
+        <label asp-for="Local" class="form-label fw-semibold text-primary text-uppercase small">Local</label>
+        <input asp-for="Local" type="text" class="form-control" placeholder="Ex: Sala 301, prédio principal">
+        <span asp-validation-for="Local" class="text-danger small fw-semibold"></span>
+    </div>
+
+    <div class="mb-3" id="link-container" style="display:none;">
+        <label asp-for="Link" class="form-label fw-semibold text-primary text-uppercase small">Link</label>
+        <input asp-for="Link" type="url" class="form-control" placeholder="Ex: https://meet.google.com/abc-defg-hij">
+        <span asp-validation-for="Link" class="text-danger small fw-semibold"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ContatoId" class="form-label fw-semibold text-primary text-uppercase small">Contato<span class="text-muted fw-normal">(OPCIONAL)</span></label>
+        <select asp-for="ContatoId" asp-items="Model.Contatos" class="form-select">
+            <option value="">Nenhum contato selecionado</option>
+        </select>
+        <span asp-validation-for="ContatoId" class="text-danger small fw-semibold"></span>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Listar">Voltar</a>
+        <button class="btn btn-primary rounded-pill px-4" type="submit">Confirmar</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        const tipoSelect = document.querySelector('[name="TipoCompromisso"]');
+        const localContainer = document.getElementById('local-container');
+        const linkContainer = document.getElementById('link-container');
+
+        function atualizarCampos() {
+            const value = tipoSelect.value;
+            if (value === 'Remoto') {
+                localContainer.style.display = 'none';
+                linkContainer.style.display = 'block';
+            } else {
+                localContainer.style.display = 'block';
+                linkContainer.style.display = 'none';
+            }
+        }
+
+        tipoSelect.addEventListener('change', atualizarCampos);
+        atualizarCampos();
+    </script>
+}

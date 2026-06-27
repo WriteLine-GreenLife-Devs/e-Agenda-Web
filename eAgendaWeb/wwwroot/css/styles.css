@@ -5,7 +5,7 @@
     --surface: rgba(19, 7, 47, 0.92);
     --surface-strong: rgba(11, 3, 28, 0.96);
     --text: #f4ebff;
-    --text-muted: #dccde9;
+    --text-muted: rgba(255, 255, 255, 0.82);
     --primary: #a755d7;
     --primary-dark: #8c2fae;
     --primary-soft: rgba(167, 85, 215, 0.18);
@@ -231,6 +231,12 @@ form.card {
 
 .form-label {
     color: var(--text-muted);
+}
+
+.form-label .text-muted,
+.form-text.text-muted,
+.text-muted {
+    color: rgba(255, 255, 255, 0.92) !important;
 }
 
 .form-control {

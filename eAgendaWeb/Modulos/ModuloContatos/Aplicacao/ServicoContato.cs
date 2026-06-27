@@ -1,3 +1,4 @@
+using eAgendaWeb.Modulos.ModuloCompromisso.Dominio;
 using eAgendaWeb.Modulos.ModuloContatos.Dominio;
 using FluentResults;
 
@@ -119,6 +120,8 @@ public class ServicoContato
             .Select(c => new ListarContatosDto(
                 c.Id,
                 c.Nome,
+                c.Telefone,
+                c.Email,
                 string.IsNullOrWhiteSpace(c.Cargo) ? null : c.Cargo,
                 string.IsNullOrWhiteSpace(c.Empresa) ? null : c.Empresa
             ))

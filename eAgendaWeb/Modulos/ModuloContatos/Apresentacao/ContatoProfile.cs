@@ -1,4 +1,5 @@
 using AutoMapper;
+using eAgendaWeb.Modulos.ModuloCompromisso.Aplicacao;
 using eAgendaWeb.Modulos.ModuloContatos.Aplicacao;
 using eAgendaWeb.Modulos.ModuloContatos.Dominio;
 
