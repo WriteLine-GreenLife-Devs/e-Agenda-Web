@@ -1,3 +1,4 @@
+using eAgendaWeb.Modulos.ModuloCompromisso.Dominio;
 using eAgendaWeb.Modulos.ModuloContatos.Dominio;
 using FluentResults;
 
