@@ -34,5 +34,6 @@ public record ListarCompromissosDto(
     TipoCompromisso TipoCompromisso,
     string? Local = null,
     string? Link = null,
-    Guid? ContatoId = null
+    Guid? ContatoId = null,
+    string? ContatoNome = null
 );

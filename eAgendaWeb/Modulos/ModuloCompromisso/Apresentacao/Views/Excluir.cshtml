@@ -17,7 +17,7 @@
         <dd class="col-sm-8 text-break">@Model.Assunto</dd>
 
         <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Data</dt>
-        <dd class="col-sm-8">@Model.DataOcorrencia:dd/MM/yyyy</dd>
+        <dd class="col-sm-8">@Model.DataOcorrencia.ToString("dd/MM/yyyy")</dd>
 
         <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Horário</dt>
         <dd class="col-sm-8">@Model.HoraInicio.ToString(@"hh\:mm") - @Model.HoraTermino.ToString(@"hh\:mm")</dd>
@@ -37,10 +37,10 @@
             <dd class="col-sm-8">@Model.Link</dd>
         }
 
-        @if (Model.ContatoId != null)
+        @if (!string.IsNullOrWhiteSpace(Model.ContatoNome))
         {
             <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Contato</dt>
-            <dd class="col-sm-8">@Model.ContatoId</dd>
+            <dd class="col-sm-8">@Model.ContatoNome</dd>
         }
     </dl>
 

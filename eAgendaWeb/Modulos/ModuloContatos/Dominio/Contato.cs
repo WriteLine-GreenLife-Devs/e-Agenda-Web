@@ -43,13 +43,22 @@ public sealed class Contato : EntidadeBase<Contato>
         }
         else if (tamanho == 11)
         {
-            Telefone = long.Parse(apenasNumeros).ToString(@"(00) 0 0000-0000");
-            return long.Parse(apenasNumeros).ToString(@"(00) 0 0000-0000");
+            Telefone = long.Parse(apenasNumeros).ToString(@"(00) 00000-0000");
+            return long.Parse(apenasNumeros).ToString(@"(00) 00000-0000");
         }
         else
         {
             return "";
         }
+    }
+
+    public static bool VerificarEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+
+        return System.Text.RegularExpressions.Regex.IsMatch(email.Trim(),
+            @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
     }
 
     public override List<string> Validar()
@@ -71,7 +80,7 @@ public sealed class Contato : EntidadeBase<Contato>
         if (string.IsNullOrWhiteSpace(Email))
             erros.Add("O campo \"Email\" deve ser preenchido.");
 
-        else if (!Email.Contains("@"))
+        else if (!VerificarEmail(Email))
             erros.Add("O campo \"Email\" é inválido.");
 
         return erros;

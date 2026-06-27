@@ -20,6 +20,19 @@ public class ServicoCompromisso
         return Result.Fail(new Error(mensagem).WithMetadata("Campo", campo));
     }
 
+    private static string? NormalizarCampoOpcional(string? valor)
+    {
+        return string.IsNullOrWhiteSpace(valor) ? null : valor.Trim();
+    }
+
+    private static void AjustarCamposPorTipo(TipoCompromisso tipoCompromisso, ref string? local, ref string? link)
+    {
+        if (tipoCompromisso == TipoCompromisso.Presencial)
+            link = null;
+        else if (tipoCompromisso == TipoCompromisso.Remoto)
+            local = null;
+    }
+
     private static Result ValidarEntidade(Compromisso compromisso)
     {
         List<string> erros = compromisso.Validar();
@@ -48,6 +61,14 @@ public class ServicoCompromisso
         return repositorioContato.SelecionarTodos().Any(c => c.Id == contatoId);
     }
 
+    private string? ObterNomeContato(Guid? contatoId)
+    {
+        if (contatoId == null || repositorioContato == null)
+            return null;
+
+        return repositorioContato.SelecionarTodos().FirstOrDefault(c => c.Id == contatoId)?.Nome;
+    }
+
     private bool VerificarConflitoHorario(Compromisso compromisso, Guid? idIgnorado = null)
     {
         return repositorioCompromisso.SelecionarTodos()
@@ -62,14 +83,18 @@ public class ServicoCompromisso
         if (!ContatoExiste(dto.ContatoId))
             return Falha(nameof(CadastrarCompromissoDto.ContatoId), "Contato selecionado não existe.");
 
+        string? local = NormalizarCampoOpcional(dto.Local);
+        string? link = NormalizarCampoOpcional(dto.Link);
+        AjustarCamposPorTipo(dto.TipoCompromisso, ref local, ref link);
+
         Compromisso novoCompromisso = new(
             assunto: dto.Assunto,
             dataOcorrencia: dto.DataOcorrencia,
             horaInicio: dto.HoraInicio,
             horaTermino: dto.HoraTermino,
             tipoCompromisso: dto.TipoCompromisso,
-            local: dto.Local ?? string.Empty,
-            link: dto.Link ?? string.Empty,
+            local: local,
+            link: link,
             contatoId: dto.ContatoId
         );
 
@@ -96,14 +121,18 @@ public class ServicoCompromisso
         if (!ContatoExiste(dto.ContatoId))
             return Falha(nameof(EditarCompromissoDto.ContatoId), "Contato selecionado não existe.");
 
+        string? local = NormalizarCampoOpcional(dto.Local);
+        string? link = NormalizarCampoOpcional(dto.Link);
+        AjustarCamposPorTipo(dto.TipoCompromisso, ref local, ref link);
+
         Compromisso compromissoAtualizado = new(
             assunto: dto.Assunto,
             dataOcorrencia: dto.DataOcorrencia,
             horaInicio: dto.HoraInicio,
             horaTermino: dto.HoraTermino,
             tipoCompromisso: dto.TipoCompromisso,
-            local: dto.Local ?? string.Empty,
-            link: dto.Link ?? string.Empty,
+            local: local,
+            link: link,
             contatoId: dto.ContatoId
         );
 
@@ -135,7 +164,8 @@ public class ServicoCompromisso
                 c.TipoCompromisso,
                 string.IsNullOrWhiteSpace(c.Local) ? null : c.Local,
                 string.IsNullOrWhiteSpace(c.Link) ? null : c.Link,
-                c.ContatoId
+                c.ContatoId,
+                ObterNomeContato(c.ContatoId)
             ))
             .ToList();
     }
@@ -156,7 +186,8 @@ public class ServicoCompromisso
             compromisso.TipoCompromisso,
             string.IsNullOrWhiteSpace(compromisso.Local) ? null : compromisso.Local,
             string.IsNullOrWhiteSpace(compromisso.Link) ? null : compromisso.Link,
-            compromisso.ContatoId
+            compromisso.ContatoId,
+            ObterNomeContato(compromisso.ContatoId)
         ));
     }
 

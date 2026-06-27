@@ -28,8 +28,8 @@ public sealed class RepositorioCompromisso(ISqlConnectionFactory connectionFacto
         @HoraInicio,
         @HoraTermino,
         @TipoCompromisso,
-        @Local,
-        @Link,
+        NULLIF(@Local, ''),
+        NULLIF(@Link, ''),
         @ContatoId
     );
 """;
@@ -42,8 +42,8 @@ public sealed class RepositorioCompromisso(ISqlConnectionFactory connectionFacto
         HoraInicio = @HoraInicio,
         HoraTermino = @HoraTermino,
         TipoCompromisso = @TipoCompromisso,
-        Local = @Local,
-        Link = @Link,
+        Local = NULLIF(@Local, ''),
+        Link = NULLIF(@Link, ''),
         ContatoId = @ContatoId
     WHERE Id = @Id;
 """;
@@ -83,22 +83,48 @@ public sealed class RepositorioCompromisso(ISqlConnectionFactory connectionFacto
 
     public void Cadastrar(Compromisso entidade)
     {
+        var parametros = new
+        {
+            entidade.Id,
+            entidade.Assunto,
+            entidade.DataOcorrencia,
+            entidade.HoraInicio,
+            entidade.HoraTermino,
+            TipoCompromisso = entidade.TipoCompromisso.ToString(),
+            Local = string.IsNullOrWhiteSpace(entidade.Local) ? null : entidade.Local,
+            Link = string.IsNullOrWhiteSpace(entidade.Link) ? null : entidade.Link,
+            entidade.ContatoId
+        };
+
         using SqlConnection conexao = connectionFactory.CreateConnection();
 
         conexao.Open();
 
-        conexao.Execute(InserirSql, entidade);
+        conexao.Execute(InserirSql, parametros);
     }
 
     public bool Editar(Guid idSelecionado, Compromisso entidadeAtualizada)
     {
         entidadeAtualizada.Id = idSelecionado;
 
+        var parametros = new
+        {
+            entidadeAtualizada.Id,
+            entidadeAtualizada.Assunto,
+            entidadeAtualizada.DataOcorrencia,
+            entidadeAtualizada.HoraInicio,
+            entidadeAtualizada.HoraTermino,
+            TipoCompromisso = entidadeAtualizada.TipoCompromisso.ToString(),
+            Local = string.IsNullOrWhiteSpace(entidadeAtualizada.Local) ? null : entidadeAtualizada.Local,
+            Link = string.IsNullOrWhiteSpace(entidadeAtualizada.Link) ? null : entidadeAtualizada.Link,
+            entidadeAtualizada.ContatoId
+        };
+
         using SqlConnection conexao = connectionFactory.CreateConnection();
 
         conexao.Open();
 
-        return conexao.Execute(AtualizarSql, entidadeAtualizada) == 1;
+        return conexao.Execute(AtualizarSql, parametros) == 1;
     }
 
     public bool Excluir(Guid idSelecionado)

@@ -233,6 +233,12 @@ form.card {
     color: var(--text-muted);
 }
 
+.form-label .text-muted,
+.form-text.text-muted,
+.text-muted {
+    color: rgba(255, 255, 255, 0.92) !important;
+}
+
 .form-control {
     background: rgba(255, 255, 255, 0.94);
     border-color: rgba(177, 108, 214, 0.45);

@@ -120,6 +120,8 @@ public class ServicoContato
             .Select(c => new ListarContatosDto(
                 c.Id,
                 c.Nome,
+                c.Telefone,
+                c.Email,
                 string.IsNullOrWhiteSpace(c.Cargo) ? null : c.Cargo,
                 string.IsNullOrWhiteSpace(c.Empresa) ? null : c.Empresa
             ))

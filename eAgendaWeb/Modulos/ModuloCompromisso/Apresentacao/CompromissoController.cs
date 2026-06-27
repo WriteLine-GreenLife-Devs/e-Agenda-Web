@@ -114,7 +114,10 @@ public class CompromissoController(ServicoCompromisso servicoCompromisso, Servic
             return RedirectToAction(nameof(Listar));
         }
 
-        ExcluirCompromissoViewModel excluirVm = mapeador.Map<ExcluirCompromissoViewModel>(resultado.Value);
+        ExcluirCompromissoViewModel excluirVm = mapeador.Map<ExcluirCompromissoViewModel>(resultado.Value) with
+        {
+            ContatoNome = resultado.Value.ContatoNome
+        };
 
         return View(excluirVm);
     }

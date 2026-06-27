@@ -13,7 +13,8 @@ public record ListarCompromissosViewModel(
     TipoCompromisso TipoCompromisso,
     string? Local = null,
     string? Link = null,
-    Guid? ContatoId = null
+    Guid? ContatoId = null,
+    string? ContatoNome = null
 );
 
 public record CadastrarCompromissoViewModel(
@@ -79,5 +80,6 @@ public record ExcluirCompromissoViewModel(
     TipoCompromisso TipoCompromisso,
     string? Local = null,
     string? Link = null,
-    Guid? ContatoId = null
+    Guid? ContatoId = null,
+    string? ContatoNome = null
 );
