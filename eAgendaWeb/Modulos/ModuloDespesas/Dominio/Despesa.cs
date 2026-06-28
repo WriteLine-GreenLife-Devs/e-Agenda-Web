@@ -42,10 +42,13 @@ public sealed class Despesa : EntidadeBase<Despesa>
         if (Valor <= 0)
             erros.Add("O valor da despesa deve ser maior que zero.");
 
-        if (FormaPagamento == FormaPagamento.Credito &&
-            (!QuantidadeParcelas.HasValue || QuantidadeParcelas <= 0))
+        if (FormaPagamento == FormaPagamento.Credito)
         {
-            erros.Add("Compras no crédito precisam informar a quantidade de parcelas.");
+            if (!QuantidadeParcelas.HasValue)
+                erros.Add("Crédito exige parcelas.");
+
+            if (QuantidadeParcelas is <= 0 or > 24)
+                erros.Add("Parcelas devem estar entre 1 e 24.");
         }
 
         if (FormaPagamento != FormaPagamento.Credito &&
