@@ -14,16 +14,18 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
         Descricao,
         DataOcorrencia,
         Valor,
-        FormaPagamento
+        FormaPagamento,
+        QuantidadeParcelas
     )
     VALUES (
         @Id,
         @Descricao,
         @DataOcorrencia,
         @Valor,
-        @FormaPagamento
+        @FormaPagamento,
+        @QuantidadeParcelas
     );
-""";
+    """;
 
     private const string AtualizarSql = """
     UPDATE dbo.TBDespesa
@@ -31,14 +33,15 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
         Descricao = @Descricao,
         DataOcorrencia = @DataOcorrencia,
         Valor = @Valor,
-        FormaPagamento = @FormaPagamento
+        FormaPagamento = @FormaPagamento,
+        QuantidadeParcelas = @QuantidadeParcelas
     WHERE Id = @Id;
-""";
+    """;
 
     private const string ExcluirSql = """
     DELETE FROM dbo.TBDespesa
     WHERE Id = @Id;
-""";
+    """;
 
     private const string SelecionarPorIdSql = """
     SELECT
@@ -46,10 +49,11 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
         Descricao,
         DataOcorrencia,
         Valor,
-        FormaPagamento
+        FormaPagamento,
+        QuantidadeParcelas
     FROM dbo.TBDespesa
     WHERE Id = @Id;
-""";
+    """;
 
     private const string SelecionarTodosSql = """
     SELECT
@@ -57,10 +61,11 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
         Descricao,
         DataOcorrencia,
         Valor,
-        FormaPagamento
+        FormaPagamento,
+        QuantidadeParcelas
     FROM dbo.TBDespesa
     ORDER BY DataOcorrencia DESC, Descricao;
-""";
+    """;
 
     public void Cadastrar(Despesa entidade)
     {
@@ -68,10 +73,7 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
 
         conexao.Open();
 
-        conexao.Execute(
-            InserirSql,
-            entidade
-        );
+        conexao.Execute(InserirSql, entidade);
     }
 
     public bool Editar(Guid idSelecionado, Despesa entidadeAtualizada)
@@ -82,12 +84,7 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
 
         conexao.Open();
 
-        int registrosAfetados = conexao.Execute(
-            AtualizarSql,
-            entidadeAtualizada
-        );
-
-        return registrosAfetados > 0;
+        return conexao.Execute(AtualizarSql, entidadeAtualizada) == 1;
     }
 
     public bool Excluir(Guid idSelecionado)
@@ -96,12 +93,7 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
 
         conexao.Open();
 
-        int registrosAfetados = conexao.Execute(
-            ExcluirSql,
-            new { Id = idSelecionado }
-        );
-
-        return registrosAfetados > 0;
+        return conexao.Execute(ExcluirSql, new { Id = idSelecionado }) == 1;
     }
 
     public Despesa? SelecionarPorId(Guid idSelecionado)
@@ -110,7 +102,7 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
 
         conexao.Open();
 
-        return conexao.QueryFirstOrDefault<Despesa>(
+        return conexao.QuerySingleOrDefault<Despesa>(
             SelecionarPorIdSql,
             new { Id = idSelecionado }
         );
@@ -122,14 +114,11 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
 
         conexao.Open();
 
-        return conexao.Query<Despesa>(
-            SelecionarTodosSql
-        ).ToList();
+        return conexao.Query<Despesa>(SelecionarTodosSql).ToList();
     }
 
     public List<Despesa> Filtrar(Predicate<Despesa> filtro)
     {
-        return SelecionarTodos()
-            .FindAll(filtro);
+        return SelecionarTodos().FindAll(filtro);
     }
 }

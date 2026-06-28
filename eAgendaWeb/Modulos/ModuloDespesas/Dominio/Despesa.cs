@@ -18,7 +18,7 @@ public sealed class Despesa : EntidadeBase<Despesa>
         decimal valor,
         FormaPagamento formaPagamento,
         int? quantidadeParcelas
-        )
+    )
     {
         Descricao = descricao;
         DataOcorrencia = dataOcorrencia;
