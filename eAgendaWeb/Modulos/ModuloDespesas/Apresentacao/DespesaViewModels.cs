@@ -29,6 +29,8 @@ public record CadastrarDespesaViewModel(
     [Required(ErrorMessage = "O campo \"Forma de Pagamento\" deve ser preenchido.")]
     FormaPagamento? FormaPagamento,
 
+    List<CategoriaOpcaoViewModel> CategoriasDisponiveis,
+
     [Range(1, 24, ErrorMessage = "A quantidade de parcelas deve ser entre 1 e 24.")]
     int? QuantidadeParcelas = null,
 
@@ -53,6 +55,8 @@ public record EditarDespesaViewModel(
     [Required(ErrorMessage = "O campo \"Forma de Pagamento\" deve ser preenchido.")]
     FormaPagamento? FormaPagamento,
 
+    List<CategoriaOpcaoViewModel> CategoriasDisponiveis,
+
     [Range(1, 24, ErrorMessage = "A quantidade de parcelas deve ser entre 1 e 24.")]
     int? QuantidadeParcelas = null,
 
@@ -67,4 +71,9 @@ public record ExcluirDespesaViewModel(
     FormaPagamento? FormaPagamento,
     int? QuantidadeParcelas,
     IReadOnlyList<string> Categorias
+);
+
+public record CategoriaOpcaoViewModel(
+    Guid Id,
+    string Nome
 );

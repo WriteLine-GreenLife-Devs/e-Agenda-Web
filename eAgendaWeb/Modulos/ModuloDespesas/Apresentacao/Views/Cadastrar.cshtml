@@ -1,0 +1,154 @@
+@using eAgendaWeb.Modulos.ModuloDespesas.Dominio
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Cadastro de Despesa";
+}
+
+@model CadastrarDespesaViewModel
+
+
+<form class="card border-primary-subtle shadow-sm mx-auto p-4" style="max-width:620px;" asp-action="Cadastrar"
+      method="post">
+
+
+    <div asp-validation-summary="ModelOnly" class="text-danger small fw-semibold mb-3">
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="Descricao" class="form-label fw-semibold text-primary text-uppercase small">
+            Descricao
+        </label>
+
+        <input asp-for="Descricao" class="form-control" placeholder="Ex: Compra supermercado">
+
+        <span asp-validation-for="Descricao" class="text-danger small">
+        </span>
+
+    </div>
+
+
+    <div class="mb-3">
+
+        <label asp-for="DataOcorrencia" class="form-label fw-semibold text-primary text-uppercase small">
+            Data
+        </label>
+
+        <input asp-for="DataOcorrencia" type="date" class="form-control" />
+
+    </div>
+
+
+    <div class="mb-3">
+
+        <label asp-for="Valor" class="form-label fw-semibold text-primary text-uppercase small">
+            Valor
+        </label>
+
+        <input asp-for="Valor" type="number" step="0.01" class="form-control" />
+
+    </div>
+
+
+    <div class="mb-3">
+
+        <label asp-for="FormaPagamento" class="form-label fw-semibold text-primary text-uppercase small">
+            Pagamento
+        </label>
+
+
+        <select asp-for="FormaPagamento" class="form-select">
+
+            <option value="">
+                Selecione
+            </option>
+
+            @foreach (FormaPagamento pagamento in Enum.GetValues<FormaPagamento>())
+            {
+                <option value="@pagamento">
+                    @pagamento
+                </option>
+            }
+
+        </select>
+
+    </div>
+
+
+    <div class="mb-3">
+
+        <label asp-for="QuantidadeParcelas" class="form-label fw-semibold text-primary text-uppercase small">
+            Parcelas
+        </label>
+
+
+        <input asp-for="QuantidadeParcelas" class="form-control" placeholder="Ex: 12" />
+
+    </div>
+
+
+    <div class="mb-3">
+
+        <label class="form-label fw-semibold text-primary text-uppercase small">
+            Categorias
+        </label>
+
+
+        <input id="pesquisaCategoria" class="form-control mb-2" placeholder="Pesquisar categoria" />
+
+
+        <select asp-for="CategoriasIds" class="form-select" multiple id="listaCategorias">
+
+            @foreach (CategoriaOpcaoViewModel categoria in Model.CategoriasDisponiveis)
+            {
+                <option value="@categoria.Id">
+                    @categoria.Nome
+                </option>
+            }
+
+        </select>
+
+    </div>
+
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+
+        <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Listar">
+            Voltar
+        </a>
+
+
+        <button class="btn btn-primary rounded-pill px-4">
+            Confirmar
+        </button>
+
+
+    </div>
+
+
+</form>
+
+
+<script>
+
+    const pesquisa =
+        document.getElementById("pesquisaCategoria");
+
+    const lista =
+        document.getElementById("listaCategorias");
+
+
+    pesquisa.addEventListener("keyup", () => {
+
+        let filtro = pesquisa.value.toLowerCase();
+
+        for (let opcao of lista.options) {
+            opcao.style.display =
+                opcao.text.toLowerCase().includes(filtro)
+                    ? ""
+                    : "none";
+        }
+
+    });
+
+</script>
