@@ -27,7 +27,7 @@ public class DespesasController(ServicoDespesa servicoDespesa, IMapper mapeador)
             string.Empty,
             DateTime.Now,
             0,
-            FormaPagamento.AVista,
+            null,
             null,
             null
         );
