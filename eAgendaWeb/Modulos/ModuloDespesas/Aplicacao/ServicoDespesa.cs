@@ -1,3 +1,4 @@
+using eAgendaWeb.Modulos.ModuloCategorias.Dominio;
 using eAgendaWeb.Modulos.ModuloDespesas.Dominio;
 using FluentResults;
 
@@ -6,10 +7,15 @@ namespace eAgendaWeb.Modulos.ModuloDespesas.Aplicacao;
 public class ServicoDespesa
 {
     private readonly IRepositorioDespesa repositorioDespesa;
+    private readonly IRepositorioCategoria repositorioCategoria;
 
-    public ServicoDespesa(IRepositorioDespesa repositorioDespesa)
+    public ServicoDespesa(
+        IRepositorioDespesa repositorioDespesa,
+        IRepositorioCategoria repositorioCategoria
+    )
     {
         this.repositorioDespesa = repositorioDespesa;
+        this.repositorioCategoria = repositorioCategoria;
     }
 
     private static Result ValidarEntidade(Despesa despesa)
@@ -31,20 +37,23 @@ public class ServicoDespesa
         return Result.Fail(new Error(erro).WithMetadata("Campo", campo));
     }
 
+    private bool CategoriasExistem(List<Guid>? categoriasIds)
+    {
+        if (categoriasIds == null || categoriasIds.Count == 0)
+            return true;
+
+        List<Guid> idsExistentes = repositorioCategoria
+            .SelecionarTodos()
+            .Select(c => c.Id)
+            .ToList();
+
+        return categoriasIds.All(id => idsExistentes.Contains(id));
+    }
+
     public Result Cadastrar(CadastrarDespesaDto dto)
     {
-        Despesa baseDespesa = new(
-            dto.Descricao,
-            dto.DataOcorrencia,
-            dto.Valor,
-            dto.FormaPagamento,
-            dto.QuantidadeParcelas
-        );
-
-        Result validacao = ValidarEntidade(baseDespesa);
-
-        if (validacao.IsFailed)
-            return validacao;
+        if (!CategoriasExistem(dto.CategoriasIds))
+            return Result.Fail("Uma ou mais categorias não existem.");
 
         int parcelas = dto.QuantidadeParcelas ?? 1;
         decimal valorParcela = dto.Valor / parcelas;
@@ -65,10 +74,10 @@ public class ServicoDespesa
                 quantidadeParcelas: parcelas
             );
 
-            Result val = ValidarEntidade(despesa);
+            Result validacao = ValidarEntidade(despesa);
 
-            if (val.IsFailed)
-                return val;
+            if (validacao.IsFailed)
+                return validacao;
 
             repositorioDespesa.Cadastrar(despesa);
         }
@@ -82,6 +91,9 @@ public class ServicoDespesa
 
         if (existente == null)
             return Result.Fail("Despesa não encontrada.");
+
+        if (!CategoriasExistem(dto.CategoriasIds))
+            return Result.Fail("Categorias existentes não encontradas.");
 
         Despesa atualizada = new(
             dto.Descricao,
@@ -100,12 +112,15 @@ public class ServicoDespesa
 
         bool ok = repositorioDespesa.Editar(dto.Id, existente);
 
-        return ok ? Result.Ok() : Result.Fail("Falha ao atualizar a despesa.");
+        return ok
+            ? Result.Ok()
+            : Result.Fail("Falha ao atualizar a despesa.");
     }
 
     public List<ListarDespesasDto> SelecionarTodos()
     {
-        return repositorioDespesa.SelecionarTodos()
+        return repositorioDespesa
+            .SelecionarTodos()
             .Select(d => new ListarDespesasDto(
                 d.Id,
                 d.Descricao,
@@ -113,7 +128,7 @@ public class ServicoDespesa
                 d.Valor,
                 d.FormaPagamento,
                 d.QuantidadeParcelas,
-                new List<string>() // categorias ainda não existem
+                []
             ))
             .ToList();
     }
@@ -132,7 +147,7 @@ public class ServicoDespesa
             despesa.Valor,
             despesa.FormaPagamento,
             despesa.QuantidadeParcelas,
-            new List<string>()
+            []
         ));
     }
 
@@ -145,6 +160,8 @@ public class ServicoDespesa
 
         bool excluido = repositorioDespesa.Excluir(id);
 
-        return excluido ? Result.Ok() : Result.Fail("Falha ao excluir a despesa.");
+        return excluido
+            ? Result.Ok()
+            : Result.Fail("Falha ao excluir a despesa.");
     }
 }
