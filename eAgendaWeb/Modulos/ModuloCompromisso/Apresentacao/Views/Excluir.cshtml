@@ -13,33 +13,33 @@
     </div>
 
     <dl class="row mb-0">
-        <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Assunto</dt>
+        <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Assunto</dt>
         <dd class="col-sm-8 text-break">@Model.Assunto</dd>
 
-        <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Data</dt>
+        <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Data</dt>
         <dd class="col-sm-8">@Model.DataOcorrencia.ToString("dd/MM/yyyy")</dd>
 
-        <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Horário</dt>
+        <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Horário</dt>
         <dd class="col-sm-8">@Model.HoraInicio.ToString(@"hh\:mm") - @Model.HoraTermino.ToString(@"hh\:mm")</dd>
 
-        <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Tipo</dt>
+        <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Tipo</dt>
         <dd class="col-sm-8">@Model.TipoCompromisso</dd>
 
         @if (!string.IsNullOrWhiteSpace(Model.Local))
         {
-            <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Local</dt>
+            <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Local</dt>
             <dd class="col-sm-8">@Model.Local</dd>
         }
 
         @if (!string.IsNullOrWhiteSpace(Model.Link))
         {
-            <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Link</dt>
+            <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Link</dt>
             <dd class="col-sm-8">@Model.Link</dd>
         }
 
         @if (!string.IsNullOrWhiteSpace(Model.ContatoNome))
         {
-            <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Contato</dt>
+            <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Contato</dt>
             <dd class="col-sm-8">@Model.ContatoNome</dd>
         }
     </dl>

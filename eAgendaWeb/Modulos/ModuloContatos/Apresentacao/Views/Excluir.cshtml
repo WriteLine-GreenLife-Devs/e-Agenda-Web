@@ -13,27 +13,27 @@
     </div>
 
     <dl class="row mb-0">
-        <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">ID</dt>
+        <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">ID</dt>
         <dd class="col-sm-8 text-break">@Model.Id</dd>
 
-        <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Nome</dt>
+        <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Nome</dt>
         <dd class="col-sm-8">@Model.Nome</dd>
 
-        <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Telefone</dt>
+        <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Telefone</dt>
         <dd class="col-sm-8">@Model.Telefone</dd>
 
-        <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Email</dt>
+        <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Email</dt>
         <dd class="col-sm-8">@Model.Email</dd>
 
         @if (!string.IsNullOrEmpty(Model.Cargo))
         {
-            <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Cargo</dt>
+            <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Cargo</dt>
             <dd class="col-sm-8">@Model.Cargo</dd>
         }
 
         @if (!string.IsNullOrEmpty(Model.Empresa))
         {
-            <dt class="col-sm-4 fw-semibold text-primary text-uppercase small">Empresa</dt>
+            <dt class="col-sm-4 fw-semibold text-uppercase small" style="color: #fff4e8;">Empresa</dt>
             <dd class="col-sm-8">@Model.Empresa</dd>
         }
     </dl>
