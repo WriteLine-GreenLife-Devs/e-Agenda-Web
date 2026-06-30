@@ -1,29 +1,35 @@
-namespace eAgenda.Dominio.Modulos.Categoria;
+using eAgendaWeb.Compartilhado.Dominio;
 
-public class Categoria
+namespace eAgendaWeb.Modulos.ModuloCategorias.Dominio;
+
+public sealed class Categoria : EntidadeBase<Categoria>
 {
-    public Guid Id { get; set; }
-    public string Nome { get; set; }
-    public string? Descricao { get; set; }
-    public bool Ativo { get; set; }
+    public string Titulo { get; private set; } = string.Empty;
 
-    public DateTime DataCriacao { get; set; }
+    private Categoria() { }
 
-    public Categoria()
+    public Categoria(string titulo)
     {
-        Id = Guid.NewGuid();
-        Ativo = true;
-        DataCriacao = DateTime.Now;
+        Titulo = titulo;
+
+        Validar();
     }
 
-    public void Atualizar(string nome, string? descricao)
+    public override List<string> Validar()
     {
-        Nome = nome;
-        Descricao = descricao;
+        List<string> erros = [];
+
+        if (string.IsNullOrWhiteSpace(Titulo))
+            erros.Add("O título da categoria é obrigatório.");
+
+        if (Titulo.Length < 2 || Titulo.Length > 100)
+            erros.Add("O título da categoria deve possuir entre 2 e 100 caracteres.");
+
+        return erros;
     }
 
-    public void Desativar()
+    public override void Atualizar(Categoria entidade)
     {
-        Ativo = false;
+        Titulo = entidade.Titulo;
     }
 }
