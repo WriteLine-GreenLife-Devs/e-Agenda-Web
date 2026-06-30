@@ -67,6 +67,32 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
     ORDER BY DataOcorrencia DESC, Descricao;
     """;
 
+    private const string SelecionarCategoriasSql = """
+    SELECT CategoriaId
+    FROM dbo.TBDespesaCategoria
+    WHERE DespesaId = @DespesaId;
+    """;
+
+    private const string InserirCategoriaSql = """
+    INSERT INTO dbo.TBDespesaCategoria
+    (
+        Id,
+        DespesaId,
+        CategoriaId
+    )
+    VALUES
+    (
+        @Id,
+        @DespesaId,
+        @CategoriaId
+    );
+    """;
+
+    private const string RemoverCategoriasSql = """
+    DELETE FROM dbo.TBDespesaCategoria
+    WHERE DespesaId = @DespesaId;
+    """;
+
     public void Cadastrar(Despesa entidade)
     {
         using SqlConnection conexao = connectionFactory.CreateConnection();
@@ -93,7 +119,23 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
 
         conexao.Open();
 
-        return conexao.Execute(ExcluirSql, new { Id = idSelecionado }) == 1;
+        using SqlTransaction transacao = conexao.BeginTransaction();
+
+        conexao.Execute(
+            RemoverCategoriasSql,
+            new { DespesaId = idSelecionado },
+            transacao
+        );
+
+        bool excluido = conexao.Execute(
+            ExcluirSql,
+            new { Id = idSelecionado },
+            transacao
+        ) == 1;
+
+        transacao.Commit();
+
+        return excluido;
     }
 
     public Despesa? SelecionarPorId(Guid idSelecionado)
@@ -115,6 +157,50 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
         conexao.Open();
 
         return conexao.Query<Despesa>(SelecionarTodosSql).ToList();
+    }
+
+    public List<Guid> SelecionarCategorias(Guid despesaId)
+    {
+        using SqlConnection conexao = connectionFactory.CreateConnection();
+
+        conexao.Open();
+
+        return conexao.Query<Guid>(
+            SelecionarCategoriasSql,
+            new { DespesaId = despesaId }
+        ).ToList();
+    }
+
+    public void AdicionarCategorias(Guid despesaId, List<Guid> categoriasIds)
+    {
+        using SqlConnection conexao = connectionFactory.CreateConnection();
+
+        conexao.Open();
+
+        foreach (Guid categoriaId in categoriasIds)
+        {
+            conexao.Execute(
+                InserirCategoriaSql,
+                new
+                {
+                    Id = Guid.NewGuid(),
+                    DespesaId = despesaId,
+                    CategoriaId = categoriaId
+                }
+            );
+        }
+    }
+
+    public void RemoverCategorias(Guid despesaId)
+    {
+        using SqlConnection conexao = connectionFactory.CreateConnection();
+
+        conexao.Open();
+
+        conexao.Execute(
+            RemoverCategoriasSql,
+            new { DespesaId = despesaId }
+        );
     }
 
     public List<Despesa> Filtrar(Predicate<Despesa> filtro)

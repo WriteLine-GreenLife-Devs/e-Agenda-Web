@@ -11,8 +11,7 @@ public class ServicoDespesa
 
     public ServicoDespesa(
         IRepositorioDespesa repositorioDespesa,
-        IRepositorioCategoria repositorioCategoria
-    )
+        IRepositorioCategoria repositorioCategoria)
     {
         this.repositorioDespesa = repositorioDespesa;
         this.repositorioCategoria = repositorioCategoria;
@@ -42,18 +41,43 @@ public class ServicoDespesa
         if (categoriasIds == null || categoriasIds.Count == 0)
             return true;
 
-        List<Guid> idsExistentes = repositorioCategoria
+        List<Guid> existentes = repositorioCategoria
             .SelecionarTodos()
             .Select(c => c.Id)
             .ToList();
 
-        return categoriasIds.All(id => idsExistentes.Contains(id));
+        return categoriasIds.All(id => existentes.Contains(id));
+    }
+
+    private List<string> ObterCategorias(Guid despesaId)
+    {
+        List<Guid> categoriasIds =
+            repositorioDespesa.SelecionarCategorias(despesaId);
+
+        return repositorioCategoria
+            .SelecionarTodos()
+            .Where(c => categoriasIds.Contains(c.Id))
+            .Select(c => c.Titulo)
+            .ToList();
     }
 
     public Result Cadastrar(CadastrarDespesaDto dto)
     {
         if (!CategoriasExistem(dto.CategoriasIds))
-            return Result.Fail("Uma ou mais categorias não existem.");
+            return Result.Fail("Uma ou mais categorias selecionadas não existem.");
+
+        Despesa baseDespesa = new(
+            dto.Descricao,
+            dto.DataOcorrencia,
+            dto.Valor,
+            dto.FormaPagamento,
+            dto.QuantidadeParcelas
+        );
+
+        Result validacao = ValidarEntidade(baseDespesa);
+
+        if (validacao.IsFailed)
+            return validacao;
 
         int parcelas = dto.QuantidadeParcelas ?? 1;
         decimal valorParcela = dto.Valor / parcelas;
@@ -74,12 +98,18 @@ public class ServicoDespesa
                 quantidadeParcelas: parcelas
             );
 
-            Result validacao = ValidarEntidade(despesa);
+            Result resultado = ValidarEntidade(despesa);
 
-            if (validacao.IsFailed)
-                return validacao;
+            if (resultado.IsFailed)
+                return resultado;
 
             repositorioDespesa.Cadastrar(despesa);
+
+            if (dto.CategoriasIds?.Count > 0)
+                repositorioDespesa.AdicionarCategorias(
+                    despesa.Id,
+                    dto.CategoriasIds
+                );
         }
 
         return Result.Ok();
@@ -87,13 +117,14 @@ public class ServicoDespesa
 
     public Result Editar(EditarDespesaDto dto)
     {
-        Despesa? existente = repositorioDespesa.SelecionarPorId(dto.Id);
+        if (!CategoriasExistem(dto.CategoriasIds))
+            return Result.Fail("Uma ou mais categorias selecionadas não existem.");
+
+        Despesa? existente =
+            repositorioDespesa.SelecionarPorId(dto.Id);
 
         if (existente == null)
             return Result.Fail("Despesa não encontrada.");
-
-        if (!CategoriasExistem(dto.CategoriasIds))
-            return Result.Fail("Categorias existentes não encontradas.");
 
         Despesa atualizada = new(
             dto.Descricao,
@@ -110,11 +141,21 @@ public class ServicoDespesa
         if (validacao.IsFailed)
             return validacao;
 
-        bool ok = repositorioDespesa.Editar(dto.Id, existente);
+        bool atualizado =
+            repositorioDespesa.Editar(dto.Id, existente);
 
-        return ok
-            ? Result.Ok()
-            : Result.Fail("Falha ao atualizar a despesa.");
+        if (!atualizado)
+            return Result.Fail("Falha ao atualizar a despesa.");
+
+        repositorioDespesa.RemoverCategorias(dto.Id);
+
+        if (dto.CategoriasIds?.Count > 0)
+            repositorioDespesa.AdicionarCategorias(
+                dto.Id,
+                dto.CategoriasIds
+            );
+
+        return Result.Ok();
     }
 
     public List<ListarDespesasDto> SelecionarTodos()
@@ -128,14 +169,15 @@ public class ServicoDespesa
                 d.Valor,
                 d.FormaPagamento,
                 d.QuantidadeParcelas,
-                []
+                ObterCategorias(d.Id)
             ))
             .ToList();
     }
 
     public Result<ListarDespesasDto> SelecionarPorId(Guid id)
     {
-        Despesa? despesa = repositorioDespesa.SelecionarPorId(id);
+        Despesa? despesa =
+            repositorioDespesa.SelecionarPorId(id);
 
         if (despesa == null)
             return Result.Fail("Despesa não encontrada.");
@@ -147,18 +189,22 @@ public class ServicoDespesa
             despesa.Valor,
             despesa.FormaPagamento,
             despesa.QuantidadeParcelas,
-            []
+            ObterCategorias(despesa.Id)
         ));
     }
 
     public Result Excluir(Guid id)
     {
-        Despesa? despesa = repositorioDespesa.SelecionarPorId(id);
+        Despesa? despesa =
+            repositorioDespesa.SelecionarPorId(id);
 
         if (despesa == null)
             return Result.Fail("Despesa não encontrada.");
 
-        bool excluido = repositorioDespesa.Excluir(id);
+        repositorioDespesa.RemoverCategorias(id);
+
+        bool excluido =
+            repositorioDespesa.Excluir(id);
 
         return excluido
             ? Result.Ok()

@@ -1,13 +1,17 @@
 using AutoMapper;
 using eAgendaWeb.Compartilhado.Apresentacao.Extensions;
+using eAgendaWeb.Modulos.ModuloCategorias.Aplicacao;
 using eAgendaWeb.Modulos.ModuloDespesas.Aplicacao;
-using eAgendaWeb.Modulos.ModuloDespesas.Dominio;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eAgendaWeb.Modulos.ModuloDespesas.Apresentacao;
 
-public class DespesasController(ServicoDespesa servicoDespesa, IMapper mapeador) : Controller
+public class DespesasController(
+    ServicoDespesa servicoDespesa,
+    ServicoCategoria servicoCategoria,
+    IMapper mapeador
+) : Controller
 {
     [HttpGet]
     public ActionResult Listar()
@@ -28,8 +32,9 @@ public class DespesasController(ServicoDespesa servicoDespesa, IMapper mapeador)
             DateTime.Now,
             0,
             null,
+            ObterCategorias(),
             null,
-            null
+            []
         );
 
         return View(vm);
@@ -70,6 +75,11 @@ public class DespesasController(ServicoDespesa servicoDespesa, IMapper mapeador)
         EditarDespesaViewModel vm =
             mapeador.Map<EditarDespesaViewModel>(resultado.Value);
 
+        vm = vm with
+        {
+            CategoriasDisponiveis = ObterCategorias()
+        };
+
         return View(vm);
     }
 
@@ -77,7 +87,14 @@ public class DespesasController(ServicoDespesa servicoDespesa, IMapper mapeador)
     public ActionResult Editar(EditarDespesaViewModel vm)
     {
         if (!ModelState.IsValid)
+        {
+            vm = vm with
+            {
+                CategoriasDisponiveis = ObterCategorias()
+            };
+
             return View(vm);
+        }
 
         EditarDespesaDto dto =
             mapeador.Map<EditarDespesaDto>(vm);
@@ -87,6 +104,12 @@ public class DespesasController(ServicoDespesa servicoDespesa, IMapper mapeador)
         if (resultado.IsFailed)
         {
             ModelState.AddModelError(resultado);
+
+            vm = vm with
+            {
+                CategoriasDisponiveis = ObterCategorias()
+            };
+
             return View(vm);
         }
 
@@ -114,11 +137,23 @@ public class DespesasController(ServicoDespesa servicoDespesa, IMapper mapeador)
     [HttpPost]
     public ActionResult Excluir(ExcluirDespesaViewModel vm)
     {
-        Result resultado = servicoDespesa.Excluir(vm.Id);
+        Result resultado =
+            servicoDespesa.Excluir(vm.Id);
 
         if (resultado.IsFailed)
             TempData.AddErrorMessage(resultado);
 
         return RedirectToAction(nameof(Listar));
+    }
+
+    private List<CategoriaOpcaoViewModel> ObterCategorias()
+    {
+        return servicoCategoria
+            .SelecionarTodos()
+            .Select(c => new CategoriaOpcaoViewModel(
+                c.Id,
+                c.Titulo
+            ))
+            .ToList();
     }
 }

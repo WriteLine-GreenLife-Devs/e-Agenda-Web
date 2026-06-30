@@ -1,6 +1,12 @@
 using eAgendaWeb.Compartilhado.Dominio;
-using eAgendaWeb.Modulos.ModuloDespesas.Dominio;
 
 namespace eAgendaWeb.Modulos.ModuloDespesas.Dominio;
 
-public interface IRepositorioDespesa : IRepositorio<Despesa> { }
+public interface IRepositorioDespesa : IRepositorio<Despesa>
+{
+    List<Guid> SelecionarCategorias(Guid despesaId);
+
+    void AdicionarCategorias(Guid despesaId, List<Guid> categoriasIds);
+
+    void RemoverCategorias(Guid despesaId);
+}
