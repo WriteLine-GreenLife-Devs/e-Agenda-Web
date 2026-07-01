@@ -1,6 +1,8 @@
 using eAgendaWeb.Compartilhado.Aplicacao.Logging;
+using eAgendaWeb.Modulos.ModuloCategorias.Aplicacao;
 using eAgendaWeb.Modulos.ModuloCompromisso.Aplicacao;
 using eAgendaWeb.Modulos.ModuloContatos.Aplicacao;
+using eAgendaWeb.Modulos.ModuloDespesas.Aplicacao;
 
 namespace eAgendaWeb.Compartilhado.Aplicacao;
 
@@ -17,5 +19,7 @@ public static class InjecaoDependencia
         // services.AddScoped<ServicoExemplo>();
         services.AddScoped<ServicoContato>();
         services.AddScoped<ServicoCompromisso>();
+        services.AddScoped<ServicoCategoria>();
+        services.AddScoped<ServicoDespesa>();
     }
 }

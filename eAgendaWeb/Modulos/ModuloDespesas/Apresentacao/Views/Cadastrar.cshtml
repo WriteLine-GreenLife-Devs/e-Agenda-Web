@@ -1,0 +1,112 @@
+@using eAgendaWeb.Modulos.ModuloDespesas.Dominio
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Cadastro de Despesa";
+}
+
+@model CadastrarDespesaViewModel
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+      rel="stylesheet" />
+
+<form class="card border-primary-subtle shadow-sm mx-auto p-4" style="max-width:620px;" asp-action="Cadastrar"
+      method="post">
+
+    <div asp-validation-summary="All" class="text-danger small fw-semibold mb-3 alert alert-danger"
+         style="display: @(ViewData.ModelState.IsValid ? "none" : "block")"></div>
+
+    <div class="mb-3">
+        <label asp-for="Descricao" class="form-label fw-semibold text-primary text-uppercase small">Descrição</label>
+        <input asp-for="Descricao" class="form-control" placeholder="Ex: Compra supermercado">
+        <span asp-validation-for="Descricao" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DataOcorrencia" class="form-label fw-semibold text-primary text-uppercase small">Data</label>
+        <input asp-for="DataOcorrencia" type="date" class="form-control" />
+        <span asp-validation-for="DataOcorrencia" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Valor" class="form-label fw-semibold text-primary text-uppercase small">Valor</label>
+        <input asp-for="Valor" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="Valor" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="FormaPagamento"
+               class="form-label fw-semibold text-primary text-uppercase small">Pagamento</label>
+        <select asp-for="FormaPagamento" class="form-select" id="formaPagamentoSelect">
+            <option value="">Selecione</option>
+            @foreach (FormaPagamento pagamento in Enum.GetValues<FormaPagamento>())
+            {
+                <option value="@pagamento">@pagamento</option>
+            }
+        </select>
+        <span asp-validation-for="FormaPagamento" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="QuantidadeParcelas"
+               class="form-label fw-semibold text-primary text-uppercase small">Parcelas</label>
+        <input asp-for="QuantidadeParcelas" class="form-control" placeholder="Ex: 12" id="quantidadeParcelasInput" />
+        <span asp-validation-for="QuantidadeParcelas" class="text-danger small"></span>
+        <small class="text-muted">Apenas para compras no Crédito.</small>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-semibold text-primary text-uppercase small">Categorias</label>
+        <select asp-for="CategoriasIds" class="form-select" multiple id="listaCategorias">
+            @foreach (CategoriaOpcaoViewModel categoria in Model.CategoriasDisponiveis)
+            {
+                <option value="@categoria.Id">@categoria.Nome</option>
+            }
+        </select>
+        <span asp-validation-for="CategoriasIds" class="text-danger small"></span>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Listar">Voltar</a>
+        <button class="btn btn-primary rounded-pill px-4" type="submit">Gravar</button>
+    </div>
+
+</form>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+    <!-- JS do Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+        // Inicializa o Dropdown de Pesquisa (Select2)
+        $('#listaCategorias').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Clique para pesquisar e selecionar...',
+        allowClear: true,
+        width: '100%'
+        });
+
+        // Lógica para evitar que a validação do Domínio bloqueie o salvamento
+        const pagamentoSelect = $('#formaPagamentoSelect');
+        const parcelasInput = $('#quantidadeParcelasInput');
+
+        function toggleParcelas() {
+        if (pagamentoSelect.val() === 'Credito') {
+        parcelasInput.prop('readonly', false);
+        } else {
+        parcelasInput.val(''); // Limpa o campo se não for crédito
+        parcelasInput.prop('readonly', true); // Bloqueia a digitação
+        }
+        }
+
+        pagamentoSelect.on('change', toggleParcelas);
+        toggleParcelas(); // Roda na inicialização
+        });
+    </script>
+}

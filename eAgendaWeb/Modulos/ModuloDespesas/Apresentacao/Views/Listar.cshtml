@@ -1,0 +1,123 @@
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Listagem de Despesas";
+}
+
+@model List<ListarDespesasViewModel>
+
+<a class="btn btn-outline-primary rounded-pill px-4 mb-3" asp-action="Cadastrar">
+    Cadastrar Nova
+</a>
+
+@if (TempData["MensagemErro"] is string mensagemErro)
+{
+    <div class="alert alert-danger border-start border-danger border-4 rounded-3">
+        @mensagemErro
+    </div>
+}
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-primary border-start border-primary border-4 rounded-3">
+        Nenhuma despesa cadastrada.
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">
+
+        @foreach (ListarDespesasViewModel p in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title">
+                                @p.Descricao
+                            </h5>
+
+                            <span class="badge text-bg-primary rounded-pill">
+                                @p.Id.ToString().Substring(0, 8)
+                            </span>
+                        </div>
+
+
+                        <dl class="row g-2">
+
+                            <dt class="col-6 text-secondary fw-semibold">
+                                Data
+                            </dt>
+
+                            <dd class="col-6">
+                                @p.DataOcorrencia.ToString("dd/MM/yyyy")
+                            </dd>
+
+
+                            <dt class="col-6 text-secondary fw-semibold">
+                                Valor
+                            </dt>
+
+                            <dd class="col-6">
+                                @p.Valor.ToString("C")
+                            </dd>
+
+
+                            <dt class="col-6 text-secondary fw-semibold">
+                                Pagamento
+                            </dt>
+
+                            <dd class="col-6">
+                                @p.FormaPagamento
+                            </dd>
+
+
+                            @if (p.QuantidadeParcelas.HasValue)
+                            {
+                                <dt class="col-6 text-secondary fw-semibold">
+                                    Parcelas
+                                </dt>
+
+                                <dd class="col-6">
+                                    @p.QuantidadeParcelas
+                                </dd>
+                            }
+
+
+                            @if (p.Categorias.Count > 0)
+                            {
+                                <dt class="col-6 text-secondary fw-semibold">
+                                    Categorias
+                                </dt>
+
+                                <dd class="col-6 text-break">
+                                    @string.Join(", ", p.Categorias)
+                                </dd>
+                            }
+
+                        </dl>
+
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a class="btn btn-outline-primary btn-sm rounded-pill px-3" asp-action="Editar"
+                               asp-route-id="@p.Id">
+                                Editar
+                            </a>
+
+                            <a class="btn btn-outline-primary btn-sm rounded-pill px-3" asp-action="Excluir"
+                               asp-route-id="@p.Id">
+                                Excluir
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+}
