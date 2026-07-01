@@ -1,3 +1,4 @@
+@using eAgendaWeb.Compartilhado.Apresentacao.Extensions
 @{
     Layout = "_Layout";
     ViewBag.Titulo = "Listagem de Despesas";
@@ -69,7 +70,7 @@ else
                             </dt>
 
                             <dd class="col-6">
-                                @p.FormaPagamento
+                                @(p.FormaPagamento?.ObterDescricao())
                             </dd>
 
 
