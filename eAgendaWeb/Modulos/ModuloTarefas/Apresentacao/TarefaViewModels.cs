@@ -49,6 +49,7 @@ public record ExcluirTarefaViewModel(
     Guid Id,
     string Titulo,
     PrioridadeTarefa Prioridade,
+    DateTime DataCriacao,
     decimal PercentualConcluido
 );
 
