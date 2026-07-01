@@ -61,6 +61,11 @@ public class ServicoDespesa
             .ToList();
     }
 
+    public List<Guid> ObterCategoriasIds(Guid despesaId)
+    {
+        return repositorioDespesa.SelecionarCategorias(despesaId);
+    }
+
     public Result Cadastrar(CadastrarDespesaDto dto)
     {
         if (dto.CategoriasIds == null || dto.CategoriasIds.Count == 0)
@@ -69,12 +74,16 @@ public class ServicoDespesa
         if (!CategoriasExistem(dto.CategoriasIds))
             return Result.Fail("Uma ou mais categorias selecionadas não existem.");
 
+        int parcelasTratadas = dto.FormaPagamento == FormaPagamento.Credito
+            ? (dto.QuantidadeParcelas is null or <= 0 ? 1 : dto.QuantidadeParcelas.Value)
+            : 1;
+
         Despesa baseDespesa = new(
             dto.Descricao,
             dto.DataOcorrencia,
             dto.Valor,
             dto.FormaPagamento,
-            dto.QuantidadeParcelas
+            parcelasTratadas
         );
 
         Result validacao = ValidarEntidade(baseDespesa);
@@ -82,14 +91,13 @@ public class ServicoDespesa
         if (validacao.IsFailed)
             return validacao;
 
-        int parcelas = dto.QuantidadeParcelas ?? 1;
-        decimal valorParcela = dto.Valor / parcelas;
+        decimal valorParcela = dto.Valor / parcelasTratadas;
 
-        for (int i = 1; i <= parcelas; i++)
+        for (int i = 1; i <= parcelasTratadas; i++)
         {
             Despesa despesa = new(
-                descricao: parcelas > 1
-                    ? $"{dto.Descricao} ({i}/{parcelas})"
+                descricao: parcelasTratadas > 1
+                    ? $"{dto.Descricao} ({i}/{parcelasTratadas})"
                     : dto.Descricao,
 
                 dataOcorrencia: dto.DataOcorrencia.AddMonths(i - 1),
@@ -98,7 +106,7 @@ public class ServicoDespesa
 
                 formaPagamento: dto.FormaPagamento,
 
-                quantidadeParcelas: parcelas
+                quantidadeParcelas: parcelasTratadas
             );
 
             Result resultado = ValidarEntidade(despesa);
@@ -126,40 +134,55 @@ public class ServicoDespesa
         if (!CategoriasExistem(dto.CategoriasIds))
             return Result.Fail("Uma ou mais categorias selecionadas não existem.");
 
-        Despesa? existente =
-            repositorioDespesa.SelecionarPorId(dto.Id);
+        Despesa? existente = repositorioDespesa.SelecionarPorId(dto.Id);
 
         if (existente == null)
             return Result.Fail("Despesa não encontrada.");
 
+        int parcelasTratadas = dto.FormaPagamento == FormaPagamento.Credito
+            ? (dto.QuantidadeParcelas is null or <= 0 ? 1 : dto.QuantidadeParcelas.Value)
+            : 1;
+
+        decimal valorParcela = dto.Valor / parcelasTratadas;
+
         Despesa atualizada = new(
-            dto.Descricao,
-            dto.DataOcorrencia,
-            dto.Valor,
-            dto.FormaPagamento,
-            dto.QuantidadeParcelas
+            descricao: parcelasTratadas > 1 ? $"{dto.Descricao} (1/{parcelasTratadas})" : dto.Descricao,
+            dataOcorrencia: dto.DataOcorrencia,
+            valor: valorParcela,
+            formaPagamento: dto.FormaPagamento,
+            quantidadeParcelas: parcelasTratadas
         );
 
         existente.Atualizar(atualizada);
 
         Result validacao = ValidarEntidade(existente);
+        if (validacao.IsFailed) return validacao;
 
-        if (validacao.IsFailed)
-            return validacao;
-
-        bool atualizado =
-            repositorioDespesa.Editar(dto.Id, existente);
-
-        if (!atualizado)
-            return Result.Fail("Falha ao atualizar a despesa.");
+        bool atualizado = repositorioDespesa.Editar(dto.Id, existente);
+        if (!atualizado) return Result.Fail("Falha ao atualizar a despesa.");
 
         repositorioDespesa.RemoverCategorias(dto.Id);
-
         if (dto.CategoriasIds?.Count > 0)
-            repositorioDespesa.AdicionarCategorias(
-                dto.Id,
-                dto.CategoriasIds
+            repositorioDespesa.AdicionarCategorias(dto.Id, dto.CategoriasIds);
+
+        for (int i = 2; i <= parcelasTratadas; i++)
+        {
+            Despesa novaDespesa = new(
+                descricao: $"{dto.Descricao} ({i}/{parcelasTratadas})",
+                dataOcorrencia: dto.DataOcorrencia.AddMonths(i - 1),
+                valor: valorParcela,
+                formaPagamento: dto.FormaPagamento,
+                quantidadeParcelas: parcelasTratadas
             );
+
+            Result resultadoNova = ValidarEntidade(novaDespesa);
+            if (resultadoNova.IsFailed) return resultadoNova;
+
+            repositorioDespesa.Cadastrar(novaDespesa);
+
+            if (dto.CategoriasIds?.Count > 0)
+                repositorioDespesa.AdicionarCategorias(novaDespesa.Id, dto.CategoriasIds);
+        }
 
         return Result.Ok();
     }

@@ -1,3 +1,4 @@
+@using eAgendaWeb.Compartilhado.Apresentacao.Extensions
 @using eAgendaWeb.Modulos.ModuloDespesas.Dominio
 @{
     Layout = "_Layout";
@@ -39,13 +40,13 @@
     <div class="mb-3">
         <label asp-for="FormaPagamento"
                class="form-label fw-semibold text-primary text-uppercase small">Pagamento</label>
-        <select asp-for="FormaPagamento" class="form-select" id="formaPagamentoSelect">
-            <option value="">Selecione</option>
-            @foreach (FormaPagamento pagamento in Enum.GetValues<FormaPagamento>())
-            {
-                <option value="@pagamento">@pagamento</option>
-            }
-        </select>
+            <select asp-for="FormaPagamento" class="form-select" id="formaPagamentoSelect">
+                <option value="">Selecione</option>
+                @foreach (FormaPagamento pagamento in Enum.GetValues<FormaPagamento>())
+                {
+                    <option value="@pagamento">@pagamento.ObterDescricao()</option>
+                }
+            </select>
         <span asp-validation-for="FormaPagamento" class="text-danger small"></span>
     </div>
 
@@ -70,7 +71,7 @@
 
     <div class="d-flex justify-content-end gap-2 mt-4">
         <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Listar">Voltar</a>
-        <button class="btn btn-primary rounded-pill px-4" type="submit">Gravar</button>
+        <button class="btn btn-primary rounded-pill px-4" type="submit">Salvar</button>
     </div>
 
 </form>
