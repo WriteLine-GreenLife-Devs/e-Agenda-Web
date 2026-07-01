@@ -52,7 +52,7 @@ public sealed class Despesa : EntidadeBase<Despesa>
         }
 
         if (FormaPagamento != FormaPagamento.Credito &&
-            QuantidadeParcelas.HasValue)
+            QuantidadeParcelas > 1)
         {
             erros.Add("Parcelamento permitido somente para crédito.");
         }

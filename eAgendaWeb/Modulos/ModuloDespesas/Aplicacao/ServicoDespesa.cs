@@ -69,12 +69,16 @@ public class ServicoDespesa
         if (!CategoriasExistem(dto.CategoriasIds))
             return Result.Fail("Uma ou mais categorias selecionadas não existem.");
 
+        int parcelasTratadas = dto.FormaPagamento == FormaPagamento.Credito
+            ? (dto.QuantidadeParcelas is null or <= 0 ? 1 : dto.QuantidadeParcelas.Value)
+            : 1;
+
         Despesa baseDespesa = new(
             dto.Descricao,
             dto.DataOcorrencia,
             dto.Valor,
             dto.FormaPagamento,
-            dto.QuantidadeParcelas
+            parcelasTratadas
         );
 
         Result validacao = ValidarEntidade(baseDespesa);
@@ -82,14 +86,13 @@ public class ServicoDespesa
         if (validacao.IsFailed)
             return validacao;
 
-        int parcelas = dto.QuantidadeParcelas ?? 1;
-        decimal valorParcela = dto.Valor / parcelas;
+        decimal valorParcela = dto.Valor / parcelasTratadas;
 
-        for (int i = 1; i <= parcelas; i++)
+        for (int i = 1; i <= parcelasTratadas; i++)
         {
             Despesa despesa = new(
-                descricao: parcelas > 1
-                    ? $"{dto.Descricao} ({i}/{parcelas})"
+                descricao: parcelasTratadas > 1
+                    ? $"{dto.Descricao} ({i}/{parcelasTratadas})"
                     : dto.Descricao,
 
                 dataOcorrencia: dto.DataOcorrencia.AddMonths(i - 1),
@@ -98,7 +101,7 @@ public class ServicoDespesa
 
                 formaPagamento: dto.FormaPagamento,
 
-                quantidadeParcelas: parcelas
+                quantidadeParcelas: parcelasTratadas
             );
 
             Result resultado = ValidarEntidade(despesa);
@@ -132,12 +135,16 @@ public class ServicoDespesa
         if (existente == null)
             return Result.Fail("Despesa não encontrada.");
 
+        int parcelasTratadas = dto.FormaPagamento == FormaPagamento.Credito
+            ? (dto.QuantidadeParcelas is null or <= 0 ? 1 : dto.QuantidadeParcelas.Value)
+            : 1;
+
         Despesa atualizada = new(
             dto.Descricao,
             dto.DataOcorrencia,
             dto.Valor,
             dto.FormaPagamento,
-            dto.QuantidadeParcelas
+            parcelasTratadas
         );
 
         existente.Atualizar(atualizada);
