@@ -71,6 +71,8 @@ public class DespesasController(
             return RedirectToAction(nameof(Listar));
         }
 
+        List<Guid> categoriasSelecionadas = servicoDespesa.ObterCategoriasIds(id);
+
         EditarDespesaViewModel vm = new(
             resultado.Value.Id,
             resultado.Value.Descricao,
@@ -79,7 +81,7 @@ public class DespesasController(
             resultado.Value.FormaPagamento,
             ObterCategorias(),
             resultado.Value.QuantidadeParcelas,
-            []
+            categoriasSelecionadas
         );
 
         return View(vm);
