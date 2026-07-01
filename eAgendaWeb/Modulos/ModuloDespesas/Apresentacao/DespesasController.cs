@@ -17,10 +17,8 @@ public class DespesasController(
     public ActionResult Listar()
     {
         List<ListarDespesasDto> dtos = servicoDespesa.SelecionarTodos();
-
         List<ListarDespesasViewModel> vms =
             mapeador.Map<List<ListarDespesasViewModel>>(dtos);
-
         return View(vms);
     }
 
@@ -36,7 +34,6 @@ public class DespesasController(
             null,
             []
         );
-
         return View(vm);
     }
 
@@ -44,16 +41,19 @@ public class DespesasController(
     public ActionResult Cadastrar(CadastrarDespesaViewModel vm)
     {
         if (!ModelState.IsValid)
+        {
+            vm = vm with { CategoriasDisponiveis = ObterCategorias() };
             return View(vm);
+        }
 
         CadastrarDespesaDto dto =
             mapeador.Map<CadastrarDespesaDto>(vm);
-
         Result resultado = servicoDespesa.Cadastrar(dto);
 
         if (resultado.IsFailed)
         {
             ModelState.AddModelError(resultado);
+            vm = vm with { CategoriasDisponiveis = ObterCategorias() };
             return View(vm);
         }
 
@@ -63,8 +63,7 @@ public class DespesasController(
     [HttpGet]
     public ActionResult Editar(Guid id)
     {
-        Result<ListarDespesasDto> resultado =
-            servicoDespesa.SelecionarPorId(id);
+        Result<ListarDespesasDto> resultado = servicoDespesa.SelecionarPorId(id);
 
         if (resultado.IsFailed)
         {
@@ -72,13 +71,16 @@ public class DespesasController(
             return RedirectToAction(nameof(Listar));
         }
 
-        EditarDespesaViewModel vm =
-            mapeador.Map<EditarDespesaViewModel>(resultado.Value);
-
-        vm = vm with
-        {
-            CategoriasDisponiveis = ObterCategorias()
-        };
+        EditarDespesaViewModel vm = new(
+            resultado.Value.Id,
+            resultado.Value.Descricao,
+            resultado.Value.DataOcorrencia,
+            resultado.Value.Valor,
+            resultado.Value.FormaPagamento,
+            ObterCategorias(),
+            resultado.Value.QuantidadeParcelas,
+            []
+        );
 
         return View(vm);
     }
@@ -92,24 +94,20 @@ public class DespesasController(
             {
                 CategoriasDisponiveis = ObterCategorias()
             };
-
             return View(vm);
         }
 
         EditarDespesaDto dto =
             mapeador.Map<EditarDespesaDto>(vm);
-
         Result resultado = servicoDespesa.Editar(dto);
 
         if (resultado.IsFailed)
         {
             ModelState.AddModelError(resultado);
-
             vm = vm with
             {
                 CategoriasDisponiveis = ObterCategorias()
             };
-
             return View(vm);
         }
 

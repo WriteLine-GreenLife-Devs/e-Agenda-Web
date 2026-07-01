@@ -63,6 +63,9 @@ public class ServicoDespesa
 
     public Result Cadastrar(CadastrarDespesaDto dto)
     {
+        if (dto.CategoriasIds == null || dto.CategoriasIds.Count == 0)
+            return Result.Fail("A despesa deve conter pelo menos uma categoria vinculada.");
+
         if (!CategoriasExistem(dto.CategoriasIds))
             return Result.Fail("Uma ou mais categorias selecionadas não existem.");
 
@@ -117,6 +120,9 @@ public class ServicoDespesa
 
     public Result Editar(EditarDespesaDto dto)
     {
+        if (dto.CategoriasIds == null || dto.CategoriasIds.Count == 0)
+            return Result.Fail("A despesa deve conter pelo menos uma categoria vinculada.");
+
         if (!CategoriasExistem(dto.CategoriasIds))
             return Result.Fail("Uma ou mais categorias selecionadas não existem.");
 
