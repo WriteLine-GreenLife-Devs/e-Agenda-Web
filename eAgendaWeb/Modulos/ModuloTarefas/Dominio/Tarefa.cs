@@ -9,6 +9,7 @@ public sealed class Tarefa : EntidadeBase<Tarefa>
     public DateTime DataCriacao { get; private set; }
     public DateTime? DataConclusao { get; private set; }
     public decimal PercentualConcluido { get; private set; }
+    public bool StatusConclusao { get; private set; }
     
     private readonly List<ItemTarefa> itens = [];
     public IReadOnlyCollection<ItemTarefa> Itens => itens.AsReadOnly();
@@ -21,6 +22,7 @@ public sealed class Tarefa : EntidadeBase<Tarefa>
         Prioridade = prioridade;
         DataCriacao = DateTime.Now;
         PercentualConcluido = 0;
+        StatusConclusao = false;
 
         Validar();
     }
@@ -56,6 +58,7 @@ public sealed class Tarefa : EntidadeBase<Tarefa>
         {
             PercentualConcluido = 0;
             DataConclusao = null;
+            StatusConclusao = false;
             return;
         }
 
@@ -65,9 +68,15 @@ public sealed class Tarefa : EntidadeBase<Tarefa>
         PercentualConcluido = Math.Round(percentual, 2);
 
         if (PercentualConcluido == 100)
+        {
             DataConclusao = DateTime.Now;
+            StatusConclusao = true;
+        }
         else
+        {
             DataConclusao = null;
+            StatusConclusao = false;
+        }
     }
 
     public override List<string> Validar()

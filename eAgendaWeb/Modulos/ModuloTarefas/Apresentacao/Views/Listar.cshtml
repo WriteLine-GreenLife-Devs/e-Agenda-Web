@@ -1,0 +1,81 @@
+@using eAgendaWeb.Modulos.ModuloTarefas.Apresentacao
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Listagem de Tarefas";
+}
+
+@model List<ListarTarefasViewModel>
+
+<a class="btn btn-outline-primary rounded-pill px-4 mb-3" asp-action="Cadastrar">
+    Cadastrar Nova
+</a>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-primary border-start border-primary border-4 rounded-3">
+        Nenhuma tarefa cadastrada.
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">
+        @foreach (ListarTarefasViewModel p in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title">
+                                @p.Titulo
+                            </h5>
+                            <span class="badge text-bg-primary rounded-pill">
+                                @p.Id.ToString().Substring(0, 8)
+                            </span>
+                        </div>
+
+                        <dl class="row g-2">
+                            <dt class="col-6 text-secondary fw-semibold">
+                                Criação
+                            </dt>
+                            <dd class="col-6">
+                                @p.DataCriacao.ToString("dd/MM/yyyy")
+                            </dd>
+
+                            <dt class="col-6 text-secondary fw-semibold">
+                                Conclusão
+                            </dt>
+                            <dd class="col-6">
+                                @(p.DataConclusao?.ToString("dd/MM/yyyy") ?? "-")
+                            </dd>
+
+                            <dt class="col-6 text-secondary fw-semibold">
+                                Prioridade
+                            </dt>
+                            <dd class="col-6">
+                                @p.Prioridade
+                            </dd>
+
+                            <dt class="col-6 text-secondary fw-semibold">
+                                Progresso
+                            </dt>
+                            <dd class="col-6">
+                                @p.PercentualConcluido%
+                            </dd>
+                        </dl>
+
+                        <div class="d-flex justify-content-end gap-2 mt-3">
+                            <a class="btn btn-outline-primary btn-sm rounded-pill px-3" asp-action="Editar"
+                               asp-route-id="@p.Id">
+                                Editar
+                            </a>
+                            <a class="btn btn-outline-primary btn-sm rounded-pill px-3" asp-action="Excluir"
+                               asp-route-id="@p.Id">
+                                Excluir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

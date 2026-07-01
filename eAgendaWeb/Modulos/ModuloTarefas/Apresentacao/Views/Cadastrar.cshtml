@@ -1,0 +1,100 @@
+@using eAgendaWeb.Modulos.ModuloTarefas.Apresentacao
+@using eAgendaWeb.Modulos.ModuloTarefas.Dominio
+
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Cadastro de Tarefa";
+}
+
+@model CadastrarTarefaViewModel
+
+<form class="card border-primary-subtle shadow-sm mx-auto p-4" style="max-width:620px;" asp-action="Cadastrar"
+      method="post">
+
+    <div class="mb-3">
+        <label asp-for="Titulo" class="form-label fw-semibold text-primary text-uppercase small">
+            Título
+        </label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Prioridade" class="form-label fw-semibold text-primary text-uppercase small">
+            Prioridade
+        </label>
+        <select asp-for="Prioridade" class="form-select">
+            @foreach (PrioridadeTarefa prioridade in Enum.GetValues<PrioridadeTarefa>())
+            {
+                <option value="@prioridade">
+                    @prioridade
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label fw-semibold text-primary text-uppercase small mb-0">
+                Itens da Tarefa
+            </label>
+            <button type="button" id="btn-add-item" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                Adicionar Item
+            </button>
+        </div>
+
+        <div id="itens-container">
+            @if (Model?.Itens != null)
+            {
+                for (int i = 0; i < Model.Itens.Count; i++)
+                {
+                    <div class="input-group mb-2 item-linha">
+                        <input type="text" name="Itens[@i].Titulo" value="@Model.Itens[i].Titulo" class="form-control"
+                               placeholder="Descrição do item" />
+                        <button type="button" class="btn btn-outline-danger btn-remover-item">Remover</button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Listar">
+            Voltar
+        </a>
+        <button class="btn btn-primary rounded-pill px-4">
+            Confirmar
+        </button>
+    </div>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('btn-add-item').addEventListener('click', function () {
+            var container = document.getElementById('itens-container');
+            var index = container.querySelectorAll('.item-linha').length;
+
+            var div = document.createElement('div');
+            div.className = 'input-group mb-2 item-linha';
+
+            div.innerHTML = `
+                <input type="text" name="Itens[${index}].Titulo" class="form-control" placeholder="Descrição do item" />
+                <button type="button" class="btn btn-outline-danger btn-remover-item">Remover</button>
+            `;
+
+            container.appendChild(div);
+        });
+
+        document.getElementById('itens-container').addEventListener('click', function (e) {
+            if (e.target.classList.contains('btn-remover-item')) {
+                e.target.closest('.item-linha').remove();
+
+                var linhas = document.querySelectorAll('.item-linha');
+                linhas.forEach(function (linha, index) {
+                    var input = linha.querySelector('input[type="text"]');
+                    if (input) input.name = `Itens[${index}].Titulo`;
+                });
+            }
+        });
+    });
+</script>
