@@ -1,1 +1,43 @@
+Sobre testes automatizados:
 
+Entidades necessárias e regras de domínio:
+
+A partir dos casos de teste, são 6 entidades com regras bem definidas:
+
+1. Contato (Caso de Testes-Contato-001 a Caso de Testes-Contato-021)
+Campos: nome (2-100), email (único, formato válido), telefone (único, formato válido), cargo (opcional), empresa (opcional)
+Regras: unicidade de email e telefone, validação de formato
+
+2. Compromisso (Caso de Testes-Compromisso-001 a Caso de Testes-Compromisso-025)
+Campos: assunto (2-100), data, hora início, hora término, tipo (Presencial/Remoto), local, link, contato (opcional)
+Regras: presencial exige local, remoto exige link válido, término > início, detecção de conflito de horário (mesma data + sobreposição)
+
+3. Categoria (Caso de Testes-Categorias-001 a Caso de Testes-Categorias-013)
+Campos: título (2-100, único)
+Regras: unicidade, bloqueio de exclusão com despesas vinculadas
+
+4. Despesa (Caso de Testes-Despesas-001 a Caso de Testes-Despesas-018)
+Campos: descrição (2-100), valor (> 0, decimal), data ocorrência (default = hoje), forma pagamento (À Vista/Crédito/Débito), categorias (mínimo 1, many-to-many)
+Regras: valor > 0, forma de pagamento do enum, mínimo 1 categoria
+
+5. Tarefa (Caso de Testes-Tarefas-001 a Caso de Testes-Tarefas-018)
+Campos: título (2-100), prioridade (Baixa/Normal/Alta), status (Pendente/Concluída), percentual (0-100), data criação, data conclusão
+Regras: nasce Pendente 0%, percentual derivado dos itens, conclusão automática ao chegar em 100%
+
+6. ItemTarefa (Caso de Testes-Itens de Tarefa-001 a Caso de Testes-Itens de Tarefa-012)
+Campos: título (2-100), status conclusão, tarefa (parent obrigatório)
+Regras: conclusão recalcula percentual do parent, remoção recalcula, último item removido zera a tarefa
+
+Sugestão de atribuições para testes de domínio:
+
+A:
+Contatos (14 casos de domínio)
+Categorias (8 casos de domínio)
+Tarefas (12 casos de domínio)
+
+B:
+Compromissos (21 casos de domínio)
+Despesas (15 casos de domínio)
+Itens de Tarefa (11 casos de domínio)
+
+Posterior, testes de serviço...
