@@ -15,8 +15,9 @@ public sealed class CategoriaTests
         List<string> erros = categoria.Validar();
 
         // Asserção
-        Assert.IsTrue(erros.Count > 0);
+        Assert.HasCount(2, erros);
         CollectionAssert.Contains(erros, "O título da categoria é obrigatório.");
+        CollectionAssert.Contains(erros, "O título da categoria deve possuir entre 2 e 100 caracteres.");
     }
 
     [TestMethod]
@@ -29,6 +30,7 @@ public sealed class CategoriaTests
         List<string> erros = categoria.Validar();
 
         // Asserção
+        Assert.HasCount(1, erros);
         CollectionAssert.Contains(erros, "O título da categoria é obrigatório.");
     }
 
@@ -42,6 +44,7 @@ public sealed class CategoriaTests
         List<string> erros = categoria.Validar();
 
         // Asserção
+        Assert.HasCount(1, erros);
         CollectionAssert.Contains(erros, "O título da categoria deve possuir entre 2 e 100 caracteres.");
     }
 
@@ -55,7 +58,7 @@ public sealed class CategoriaTests
         List<string> erros = categoria.Validar();
 
         // Asserção
-        Assert.AreEqual(0, erros.Count);
+        Assert.HasCount(0, erros);
     }
 
     [TestMethod]
@@ -69,7 +72,7 @@ public sealed class CategoriaTests
         List<string> erros = categoria.Validar();
 
         // Asserção
-        Assert.AreEqual(0, erros.Count);
+        Assert.HasCount(0, erros);
     }
 
     [TestMethod]
@@ -83,6 +86,7 @@ public sealed class CategoriaTests
         List<string> erros = categoria.Validar();
 
         // Asserção
+        Assert.HasCount(1, erros);
         CollectionAssert.Contains(erros, "O título da categoria deve possuir entre 2 e 100 caracteres.");
     }
 
@@ -96,11 +100,11 @@ public sealed class CategoriaTests
         List<string> erros = categoria.Validar();
 
         // Asserção
-        Assert.AreEqual(0, erros.Count);
+        Assert.HasCount(0, erros);
     }
 
     [TestMethod]
-    public void Atualizar_DeveAtualizar_Titulo()
+    public void Atualizar_DeveAtualizarTitulo()
     {
         // Arranjo
         Categoria categoria = new Categoria("Alimentação");
