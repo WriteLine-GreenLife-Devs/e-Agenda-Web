@@ -31,15 +31,33 @@ Regras: conclusão recalcula percentual do parent, remoção recalcula, último 
 Sugestão de atribuições para testes de domínio:
 
 A:
-[x]Contatos (13 casos de domínio)
+[x]Contatos (14 casos de domínio)
 [x]Categorias (8 casos de domínio)
-[]Tarefas (10 casos de domínio)
+[x]Tarefas (12 casos de domínio)
 
 B:
-[]Compromissos (15 casos de domínio)
-[]Despesas (14 casos de domínio)
-[]Itens de Tarefa (4 casos de domínio)
+[]Compromissos (22 casos de domínio)
+[]Despesas (16 casos de domínio)
+[]Itens de Tarefa (13 casos de domínio)
 
-- 64 casos de domínio
+- 85 casos de domínio
 
-Posterior, testes de serviço...
+Sugestão de atribuições para testes de serviço:
+
+A:
+[]Contatos (11 casos de serviço)
+[]Categorias (9 casos de serviço)
+[]Tarefas (10 casos de serviço)
+
+B:
+[]Compromissos (7 casos de serviço)
+[]Despesas (6 casos de serviço)
+[]Itens de Tarefa (4 casos de serviço)
+
+- 47 casos de serviço
+
+Somados são:
+A -> 34 + 30 = 64
+B -> 51 + 17 = 68
+
+Para informações mais detalhadas sobre implementação, checar o Guia_TESTES.md em /e-Agenda-Web/ReferenciasTestes/Guia_TESTES.md
