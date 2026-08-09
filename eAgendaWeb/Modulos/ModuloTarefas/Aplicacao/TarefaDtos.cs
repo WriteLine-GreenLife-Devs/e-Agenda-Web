@@ -39,3 +39,8 @@ public record DetalhesTarefaDto(
     decimal PercentualConcluido,
     List<ItemTarefaDto> Itens
 );
+
+public record TarefasPorPrioridadeDto(
+    PrioridadeTarefa Prioridade,
+    List<ListarTarefasDto> Tarefas
+);

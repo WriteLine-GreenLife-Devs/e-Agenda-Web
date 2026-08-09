@@ -26,6 +26,7 @@ public class ServicoTarefa
 
         string campo =
             erro.Contains("título") ? nameof(Tarefa.Titulo)
+            : erro.Contains("prioridade") ? nameof(Tarefa.Prioridade)
             : string.Empty;
 
         return Result.Fail(new Error(erro).WithMetadata("Campo", campo));
@@ -83,12 +84,12 @@ public class ServicoTarefa
             }
         }
 
-        existente.Atualizar(atualizada);
-
         Result validacao = ValidarEntidade(atualizada);
 
         if (validacao.IsFailed)
             return validacao;
+
+        existente.Atualizar(atualizada);
 
         bool editado = repositorioTarefa.Editar(dto.Id, atualizada);
 
@@ -117,13 +118,39 @@ public class ServicoTarefa
     {
         return repositorioTarefa
             .SelecionarTodos()
-            .Select(t => new ListarTarefasDto(
-                t.Id,
-                t.Titulo,
-                t.Prioridade,
-                t.DataCriacao,
-                t.DataConclusao,
-                t.PercentualConcluido
+            .Select(MapearParaListagem)
+            .ToList();
+    }
+
+    public List<ListarTarefasDto> SelecionarPendentes()
+    {
+        return repositorioTarefa
+            .SelecionarTodos()
+            .Where(t => !t.StatusConclusao)
+            .Select(MapearParaListagem)
+            .ToList();
+    }
+
+    public List<ListarTarefasDto> SelecionarConcluidas()
+    {
+        return repositorioTarefa
+            .SelecionarTodos()
+            .Where(t => t.StatusConclusao)
+            .Select(MapearParaListagem)
+            .ToList();
+    }
+
+    public List<TarefasPorPrioridadeDto> SelecionarAgrupadasPorPrioridade()
+    {
+        List<Tarefa> tarefas = repositorioTarefa.SelecionarTodos();
+
+        return Enum.GetValues<PrioridadeTarefa>()
+            .Select(prioridade => new TarefasPorPrioridadeDto(
+                prioridade,
+                tarefas
+                    .Where(t => t.Prioridade == prioridade)
+                    .Select(MapearParaListagem)
+                    .ToList()
             ))
             .ToList();
     }
@@ -168,5 +195,17 @@ public class ServicoTarefa
             return Result.Fail("Falha ao atualizar o status do item.");
 
         return Result.Ok();
+    }
+
+    private static ListarTarefasDto MapearParaListagem(Tarefa tarefa)
+    {
+        return new ListarTarefasDto(
+            tarefa.Id,
+            tarefa.Titulo,
+            tarefa.Prioridade,
+            tarefa.DataCriacao,
+            tarefa.DataConclusao,
+            tarefa.PercentualConcluido
+        );
     }
 }
