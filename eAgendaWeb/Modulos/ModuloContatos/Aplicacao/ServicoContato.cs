@@ -16,13 +16,25 @@ public class ServicoContato
     {
         return Result.Fail(new Error(mensagem).WithMetadata("Campo", campo));
     }
-    private bool VerificarEmailAndTelefoneExistente(string Email, string Telefone)
+    private bool VerificarEmailExistente(string email, Guid? contatoId = null)
     {
-        return repositorioContato.SelecionarTodos().Any(c => c.Email == Email && c.Telefone == Telefone);
+        return repositorioContato.SelecionarTodos().Any(c =>
+            c.Id != contatoId &&
+            string.Equals(c.Email.Trim(), email.Trim(), StringComparison.OrdinalIgnoreCase));
     }
-    private bool VerificarEmailAndTelefoneExistenteEditar(string Email, string Telefone, Guid Id)
+
+    private bool VerificarTelefoneExistente(string telefone, Guid? contatoId = null)
     {
-        return repositorioContato.SelecionarTodos().Any(c => c.Email == Email && c.Telefone == Telefone && c.Id != Id);
+        string telefoneNormalizado = NormalizarTelefone(telefone);
+
+        return repositorioContato.SelecionarTodos().Any(c =>
+            c.Id != contatoId &&
+            NormalizarTelefone(c.Telefone) == telefoneNormalizado);
+    }
+
+    private static string NormalizarTelefone(string telefone)
+    {
+        return new string((telefone ?? string.Empty).Where(char.IsDigit).ToArray());
     }
     private static Result ValidarEntidade(Contato contato)
     {
@@ -42,8 +54,11 @@ public class ServicoContato
 
     public Result Cadastrar(CadastrarContatoDto dto)
     {
-        if (VerificarEmailAndTelefoneExistente(dto.Email, dto.Telefone))
-            return Falha(nameof(CadastrarContatoDto.Email), "Já existe um contato cadastrado com este email e telefone.");
+        if (VerificarEmailExistente(dto.Email))
+            return Falha(nameof(CadastrarContatoDto.Email), "Já existe um contato cadastrado com este email.");
+
+        if (VerificarTelefoneExistente(dto.Telefone))
+            return Falha(nameof(CadastrarContatoDto.Telefone), "Já existe um contato cadastrado com este telefone.");
 
         Contato novoContato = new(
             nome: dto.Nome,
@@ -83,8 +98,11 @@ public class ServicoContato
         if (contato == null)
             return Result.Fail("Contato não encontrado.");
 
-        if (VerificarEmailAndTelefoneExistenteEditar(dto.Email, dto.Telefone, dto.Id))
-            return Falha(nameof(EditarContatoDto.Email), "Já existe um contato cadastrado com este email e telefone.");
+        if (VerificarEmailExistente(dto.Email, dto.Id))
+            return Falha(nameof(EditarContatoDto.Email), "Já existe um contato cadastrado com este email.");
+
+        if (VerificarTelefoneExistente(dto.Telefone, dto.Id))
+            return Falha(nameof(EditarContatoDto.Telefone), "Já existe um contato cadastrado com este telefone.");
 
         Contato contatoAtualizado = new Contato(
             nome: dto.Nome,
