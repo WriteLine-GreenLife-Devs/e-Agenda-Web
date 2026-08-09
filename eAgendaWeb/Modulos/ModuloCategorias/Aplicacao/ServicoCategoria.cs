@@ -1,4 +1,5 @@
 using eAgendaWeb.Modulos.ModuloCategorias.Dominio;
+using eAgendaWeb.Modulos.ModuloDespesas.Dominio;
 using FluentResults;
 
 namespace eAgendaWeb.Modulos.ModuloCategorias.Aplicacao;
@@ -6,10 +7,14 @@ namespace eAgendaWeb.Modulos.ModuloCategorias.Aplicacao;
 public class ServicoCategoria
 {
     private readonly IRepositorioCategoria repositorioCategoria;
+    private readonly IRepositorioDespesa repositorioDespesa;
 
-    public ServicoCategoria(IRepositorioCategoria repositorioCategoria)
+    public ServicoCategoria(
+        IRepositorioCategoria repositorioCategoria,
+        IRepositorioDespesa repositorioDespesa)
     {
         this.repositorioCategoria = repositorioCategoria;
+        this.repositorioDespesa = repositorioDespesa;
     }
 
     private static Result Falha(string campo, string mensagem)
@@ -147,5 +152,29 @@ public class ServicoCategoria
                 categoria.Titulo
             )
         );
+    }
+
+    public Result<DetalhesCategoriaDto> SelecionarDetalhesPorId(Guid id)
+    {
+        Categoria? categoria = repositorioCategoria.SelecionarPorId(id);
+
+        if (categoria == null)
+            return Result.Fail("Categoria não encontrada.");
+
+        List<ListarDespesaDaCategoriaDto> despesas = repositorioDespesa
+            .SelecionarPorCategoria(id)
+            .Select(d => new ListarDespesaDaCategoriaDto(
+                d.Id,
+                d.Descricao,
+                d.DataOcorrencia,
+                d.Valor
+            ))
+            .ToList();
+
+        return Result.Ok(new DetalhesCategoriaDto(
+            categoria.Id,
+            categoria.Titulo,
+            despesas
+        ));
     }
 }

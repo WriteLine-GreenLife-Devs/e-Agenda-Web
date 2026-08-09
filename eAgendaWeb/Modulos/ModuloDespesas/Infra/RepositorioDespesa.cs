@@ -73,6 +73,21 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
     WHERE DespesaId = @DespesaId;
     """;
 
+    private const string SelecionarPorCategoriaSql = """
+    SELECT
+        d.Id,
+        d.Descricao,
+        d.DataOcorrencia,
+        d.Valor,
+        d.FormaPagamento,
+        d.QuantidadeParcelas
+    FROM dbo.TBDespesa AS d
+    INNER JOIN dbo.TBDespesaCategoria AS dc
+        ON dc.DespesaId = d.Id
+    WHERE dc.CategoriaId = @CategoriaId
+    ORDER BY d.DataOcorrencia DESC, d.Descricao;
+    """;
+
     private const string InserirCategoriaSql = """
     INSERT INTO dbo.TBDespesaCategoria
     (
@@ -168,6 +183,18 @@ public sealed class RepositorioDespesa(ISqlConnectionFactory connectionFactory)
         return conexao.Query<Guid>(
             SelecionarCategoriasSql,
             new { DespesaId = despesaId }
+        ).ToList();
+    }
+
+    public List<Despesa> SelecionarPorCategoria(Guid categoriaId)
+    {
+        using SqlConnection conexao = connectionFactory.CreateConnection();
+
+        conexao.Open();
+
+        return conexao.Query<Despesa>(
+            SelecionarPorCategoriaSql,
+            new { CategoriaId = categoriaId }
         ).ToList();
     }
 

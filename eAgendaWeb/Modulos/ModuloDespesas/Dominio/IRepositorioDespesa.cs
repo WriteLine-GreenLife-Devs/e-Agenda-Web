@@ -6,6 +6,8 @@ public interface IRepositorioDespesa : IRepositorio<Despesa>
 {
     List<Guid> SelecionarCategorias(Guid despesaId);
 
+    List<Despesa> SelecionarPorCategoria(Guid categoriaId);
+
     void AdicionarCategorias(Guid despesaId, List<Guid> categoriasIds);
 
     void RemoverCategorias(Guid despesaId);
