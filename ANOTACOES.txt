@@ -36,28 +36,28 @@ A:
 [x]Tarefas (12 casos de domínio)
 
 B:
-[]Compromissos (22 casos de domínio)
-[]Despesas (16 casos de domínio)
-[]Itens de Tarefa (13 casos de domínio)
+[]Compromissos (21 casos de domínio)
+[]Despesas (15 casos de domínio)
+[]Itens de Tarefa (11 casos de domínio)
 
-- 85 casos de domínio
+- 81 casos de regras de domínio na planilha
 
 Sugestão de atribuições para testes de serviço:
 
 A:
-[]Contatos (11 casos de serviço)
-[]Categorias (9 casos de serviço)
-[]Tarefas (10 casos de serviço)
+[]Contatos (12 casos de uso)
+[]Categorias (9 casos de uso)
+[]Tarefas (15 casos de uso)
 
 B:
-[]Compromissos (7 casos de serviço)
-[]Despesas (6 casos de serviço)
-[]Itens de Tarefa (4 casos de serviço)
+[]Compromissos (17 casos de uso)
+[]Despesas (11 casos de uso)
+[]Itens de Tarefa (10 casos de uso)
 
-- 47 casos de serviço
+- 74 casos marcados para casos de uso na planilha
 
-Somados são:
-A -> 34 + 30 = 64
-B -> 51 + 17 = 68
+Somando as marcações de domínio e casos de uso:
+A -> 34 + 36 = 70
+B -> 47 + 38 = 85
 
 Para informações mais detalhadas sobre implementação, checar o Guia_TESTES.md em /e-Agenda-Web/ReferenciasTestes/Guia_TESTES.md

@@ -89,6 +89,9 @@ public sealed class Tarefa : EntidadeBase<Tarefa>
         if (Titulo.Length < 2 || Titulo.Length > 100)
             erros.Add("O título deve possuir entre 2 e 100 caracteres.");
 
+        if (!Enum.IsDefined(Prioridade))
+            erros.Add("A prioridade da tarefa deve ser Baixa, Normal ou Alta.");
+
         return erros;
     }
 

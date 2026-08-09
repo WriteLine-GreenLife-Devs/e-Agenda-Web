@@ -37,6 +37,14 @@ public sealed class RepositorioCategoria(ISqlConnectionFactory connectionFactory
     ORDER BY Titulo;
 """;
 
+    private const string VerificarDespesasVinculadasSql = """
+    SELECT CASE WHEN EXISTS (
+        SELECT 1
+        FROM dbo.TBDespesaCategoria
+        WHERE CategoriaId = @CategoriaId
+    ) THEN CAST(1 AS bit) ELSE CAST(0 AS bit) END;
+""";
+
     public void Cadastrar(Categoria entidade)
     {
         using SqlConnection conexao = connectionFactory.CreateConnection();
@@ -89,5 +97,16 @@ public sealed class RepositorioCategoria(ISqlConnectionFactory connectionFactory
     public List<Categoria> Filtrar(Predicate<Categoria> filtro)
     {
         return SelecionarTodos().FindAll(filtro);
+    }
+
+    public bool PossuiDespesasVinculadas(Guid categoriaId)
+    {
+        using SqlConnection conexao = connectionFactory.CreateConnection();
+
+        conexao.Open();
+
+        return conexao.ExecuteScalar<bool>(
+            VerificarDespesasVinculadasSql,
+            new { CategoriaId = categoriaId });
     }
 }

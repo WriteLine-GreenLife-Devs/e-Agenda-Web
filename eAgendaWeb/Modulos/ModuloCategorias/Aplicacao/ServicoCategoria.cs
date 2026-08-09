@@ -112,6 +112,12 @@ public class ServicoCategoria
         if (categoria == null)
             return Result.Fail("Categoria não encontrada.");
 
+        if (repositorioCategoria.PossuiDespesasVinculadas(id))
+            return Falha(
+                nameof(Categoria.Id),
+                "Não é possível excluir uma categoria que possua despesas vinculadas."
+            );
+
         repositorioCategoria.Excluir(id);
 
         return Result.Ok();

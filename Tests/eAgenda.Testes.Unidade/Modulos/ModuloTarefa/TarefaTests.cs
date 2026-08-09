@@ -22,12 +22,16 @@ public sealed class TarefaTests
     public void Construtor_DeveNascerPendenteComZeroPorcentoESemDataConclusao()
     {
         // Arranjo + Ação
+        DateTime antesDaCriacao = DateTime.Now;
         Tarefa tarefa = new Tarefa("Estudar para prova", PrioridadeTarefa.Normal);
+        DateTime depoisDaCriacao = DateTime.Now;
 
         // Asserção
         Assert.IsFalse(tarefa.StatusConclusao);
         Assert.AreEqual(0m, tarefa.PercentualConcluido);
         Assert.IsNull(tarefa.DataConclusao);
+        Assert.IsGreaterThanOrEqualTo(antesDaCriacao, tarefa.DataCriacao);
+        Assert.IsLessThanOrEqualTo(depoisDaCriacao, tarefa.DataCriacao);
     }
 
     [TestMethod]
@@ -45,14 +49,18 @@ public sealed class TarefaTests
     {
         // Arranjo
         Tarefa tarefa = new Tarefa("Estudar para prova", PrioridadeTarefa.Normal);
-        ItemTarefa item = new ItemTarefa("Ler capítulo 1");
+        ItemTarefa primeiroItem = new ItemTarefa("Ler capítulo 1");
+        ItemTarefa segundoItem = new ItemTarefa("Resolver exercícios");
 
         // Ação
-        tarefa.AdicionarItem(item);
+        tarefa.AdicionarItem(primeiroItem);
+        tarefa.AdicionarItem(segundoItem);
 
         // Asserção
-        Assert.HasCount(1, tarefa.Itens);
-        Assert.AreEqual(tarefa.Id, item.TarefaId);
+        Assert.HasCount(2, tarefa.Itens);
+        Assert.AreEqual(tarefa.Id, primeiroItem.TarefaId);
+        Assert.AreEqual(tarefa.Id, segundoItem.TarefaId);
+        Assert.AreEqual(0m, tarefa.PercentualConcluido);
     }
 
     [TestMethod]
@@ -139,6 +147,21 @@ public sealed class TarefaTests
         // Asserção
         Assert.AreEqual("Estudar e revisar", tarefa.Titulo);
         Assert.AreEqual(PrioridadeTarefa.Alta, tarefa.Prioridade);
+    }
+
+    [TestMethod]
+    public void Validar_ComPrioridadeInvalida_DeveRetornarErroPrioridade()
+    {
+        // Arranjo
+        PrioridadeTarefa prioridadeInvalida = (PrioridadeTarefa)999;
+        Tarefa tarefa = new Tarefa("Estudar", prioridadeInvalida);
+
+        // Ação
+        List<string> erros = tarefa.Validar();
+
+        // Asserção
+        Assert.HasCount(1, erros);
+        CollectionAssert.Contains(erros, "A prioridade da tarefa deve ser Baixa, Normal ou Alta.");
     }
 
     [TestMethod]

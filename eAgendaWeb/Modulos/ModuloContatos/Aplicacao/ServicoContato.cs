@@ -1,4 +1,3 @@
-using eAgendaWeb.Modulos.ModuloCompromisso.Dominio;
 using eAgendaWeb.Modulos.ModuloContatos.Dominio;
 using FluentResults;
 
@@ -7,12 +6,10 @@ namespace eAgendaWeb.Modulos.ModuloContatos.Aplicacao;
 public class ServicoContato
 {
     private readonly IRepositorioContato repositorioContato;
-    private readonly IRepositorioCompromisso repositorioCompromisso;
 
-    public ServicoContato(IRepositorioContato repositorioContato, IRepositorioCompromisso repositorioCompromisso = null)
+    public ServicoContato(IRepositorioContato repositorioContato)
     {
         this.repositorioContato = repositorioContato;
-        this.repositorioCompromisso = repositorioCompromisso;
     }
 
     private static Result Falha(string campo, string mensagem)
@@ -26,13 +23,6 @@ public class ServicoContato
     private bool VerificarEmailAndTelefoneExistenteEditar(string Email, string Telefone, Guid Id)
     {
         return repositorioContato.SelecionarTodos().Any(c => c.Email == Email && c.Telefone == Telefone && c.Id != Id);
-    }
-    private bool VerificarCompromissosVinculados(Guid contatoId)
-    {
-        if (repositorioCompromisso == null)
-            return false;
-
-        return repositorioCompromisso.SelecionarTodos().Any(c => c.ContatoId == contatoId);
     }
     private static Result ValidarEntidade(Contato contato)
     {
@@ -79,7 +69,7 @@ public class ServicoContato
         if (contato == null)
             return Result.Fail("Contato não encontrado.");
 
-        if (VerificarCompromissosVinculados(id))
+        if (repositorioContato.PossuiCompromissosVinculados(id))
             return Falha(nameof(Contato.Id), "Não é possível excluir um contato que possua compromissos vinculados.");
 
         repositorioContato.Excluir(id);

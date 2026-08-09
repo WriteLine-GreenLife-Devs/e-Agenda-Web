@@ -2,4 +2,7 @@ using eAgendaWeb.Compartilhado.Dominio;
 
 namespace eAgendaWeb.Modulos.ModuloCategorias.Dominio;
 
-public interface IRepositorioCategoria : IRepositorio<Categoria> { }
+public interface IRepositorioCategoria : IRepositorio<Categoria>
+{
+    bool PossuiDespesasVinculadas(Guid categoriaId);
+}

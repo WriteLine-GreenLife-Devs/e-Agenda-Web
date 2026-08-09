@@ -42,6 +42,14 @@ public sealed class RepositorioContato(ISqlConnectionFactory connectionFactory)
     ORDER BY Nome;
 """;
 
+    private const string VerificarCompromissosVinculadosSql = """
+    SELECT CASE WHEN EXISTS (
+        SELECT 1
+        FROM dbo.TBCompromisso
+        WHERE ContatoId = @ContatoId
+    ) THEN CAST(1 AS bit) ELSE CAST(0 AS bit) END;
+""";
+
     public void Cadastrar(Contato entidade)
     {
         using SqlConnection conexao = connectionFactory.CreateConnection();
@@ -92,5 +100,16 @@ public sealed class RepositorioContato(ISqlConnectionFactory connectionFactory)
     public List<Contato> Filtrar(Predicate<Contato> filtro)
     {
         return SelecionarTodos().FindAll(filtro);
+    }
+
+    public bool PossuiCompromissosVinculados(Guid contatoId)
+    {
+        using SqlConnection conexao = connectionFactory.CreateConnection();
+
+        conexao.Open();
+
+        return conexao.ExecuteScalar<bool>(
+            VerificarCompromissosVinculadosSql,
+            new { ContatoId = contatoId });
     }
 }

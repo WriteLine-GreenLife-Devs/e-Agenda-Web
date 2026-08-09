@@ -135,26 +135,28 @@ public sealed class ContatoTests
     public void VerificarTelefone_ComTelefoneFixo_DeveRetornarFormatado()
     {
         // Arranjo
-        Contato contato = new Contato();
+        Contato contato = new Contato("João Silva", "joao@email.com", "1234567890", "", "");
 
         // Ação
-        string resultado = contato.VerificarTelefone("1234567890");
+        List<string> erros = contato.Validar();
 
         // Asserção
-        Assert.AreEqual("(12) 3456-7890", resultado);
+        Assert.HasCount(0, erros);
+        Assert.AreEqual("(12) 3456-7890", contato.Telefone);
     }
 
     [TestMethod]
     public void VerificarTelefone_ComTelefoneCelular_DeveRetornarFormatado()
     {
         // Arranjo
-        Contato contato = new Contato();
+        Contato contato = new Contato("João Silva", "joao@email.com", "12345678901", "", "");
 
         // Ação
-        string resultado = contato.VerificarTelefone("12345678901");
+        List<string> erros = contato.Validar();
 
         // Asserção
-        Assert.AreEqual("(12) 34567-8901", resultado);
+        Assert.HasCount(0, erros);
+        Assert.AreEqual("(12) 34567-8901", contato.Telefone);
     }
 
     [TestMethod]
