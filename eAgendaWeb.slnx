@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Tests/">
+    <Project Path="Tests/eAgenda.Testes.E2E/eAgenda.Testes.E2E.csproj" />
     <Project Path="Tests/eAgenda.Testes.Integracao/eAgenda.Testes.Integracao.csproj" />
     <Project Path="Tests/eAgenda.Testes.Unidade/eAgenda.Testes.Unidade.csproj" />
   </Folder>

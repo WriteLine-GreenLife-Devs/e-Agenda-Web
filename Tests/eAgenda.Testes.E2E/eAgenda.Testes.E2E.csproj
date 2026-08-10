@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.79" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Playwright.MSTest.v4" Version="1.61.0" />
+    <PackageReference Include="MSTest" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\eAgendaWeb\eAgendaWeb.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBCategoria.sql"
+          Link="Scripts\TBCategoria.sql"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBDespesa.sql"
+          Link="Scripts\TBDespesa.sql"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBDespesaCategoria.sql"
+          Link="Scripts\TBDespesaCategoria.sql"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBContato.sql"
+          Link="Scripts\TBContato.sql"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBCompromisso.sql"
+          Link="Scripts\TBCompromisso.sql"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBTarefa.sql"
+          Link="Scripts\TBTarefa.sql"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBItemTarefa.sql"
+          Link="Scripts\TBItemTarefa.sql"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
