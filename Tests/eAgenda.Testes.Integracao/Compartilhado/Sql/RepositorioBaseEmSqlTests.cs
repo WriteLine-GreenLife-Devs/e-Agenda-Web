@@ -4,6 +4,7 @@ using eAgendaWeb.Modulos.ModuloCategorias.Infra;
 using eAgendaWeb.Modulos.ModuloCompromisso.Infra;
 using eAgendaWeb.Modulos.ModuloContatos.Infra;
 using eAgendaWeb.Modulos.ModuloDespesas.Infra;
+using eAgendaWeb.Modulos.ModuloTarefas.Infra;
 using Microsoft.Data.SqlClient;
 
 namespace eAgenda.Testes.Integracao.Compartilhado.Sql;
@@ -20,6 +21,7 @@ public abstract class RepositorioBaseEmSqlTests
     protected RepositorioDespesa repositorioDespesa = null!;
     protected RepositorioContato repositorioContato = null!;
     protected RepositorioCompromisso repositorioCompromisso = null!;
+    protected RepositorioTarefa repositorioTarefa = null!;
 
     // Ganchos
     [TestInitialize]
@@ -41,11 +43,14 @@ public abstract class RepositorioBaseEmSqlTests
         ExecutarScript("TBDespesaCategoria.sql");
         ExecutarScript("TBContato.sql");
         ExecutarScript("TBCompromisso.sql");
+        ExecutarScript("TBTarefa.sql");
+        ExecutarScript("TBItemTarefa.sql");
 
         repositorioCategoria = new RepositorioCategoria(connectionFactory);
         repositorioDespesa = new RepositorioDespesa(connectionFactory);
         repositorioContato = new RepositorioContato(connectionFactory);
         repositorioCompromisso = new RepositorioCompromisso(connectionFactory);
+        repositorioTarefa = new RepositorioTarefa(connectionFactory);
     }
 
     [TestCleanup]
