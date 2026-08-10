@@ -64,3 +64,14 @@ public record AtualizarStatusItemViewModel(
     Guid ItemId,
     bool Concluido
 );
+
+public record DetalhesTarefaViewModel(
+    Guid Id,
+    string Titulo,
+    PrioridadeTarefa Prioridade,
+    DateTime DataCriacao,
+    DateTime? DataConclusao,
+    decimal PercentualConcluido,
+    bool StatusConclusao,
+    List<ItemTarefaViewModel> Itens
+);

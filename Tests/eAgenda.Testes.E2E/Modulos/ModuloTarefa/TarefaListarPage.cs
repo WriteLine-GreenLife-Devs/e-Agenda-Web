@@ -44,6 +44,14 @@ public sealed class TarefaListarPage(IPage page, string urlBase)
         ).ClickAsync();
     }
 
+    public async Task VisualizarDetalhesAsync(string titulo)
+    {
+        await CardPorTitulo(titulo).GetByRole(
+            AriaRole.Link,
+            new() { Name = "Detalhes", Exact = true }
+        ).ClickAsync();
+    }
+
     public async Task ExcluirAsync(string titulo)
     {
         await CardPorTitulo(titulo).GetByRole(

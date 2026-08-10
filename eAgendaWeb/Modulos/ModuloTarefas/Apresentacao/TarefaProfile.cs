@@ -23,6 +23,7 @@ public class TarefaProfile : Profile
 
         CreateMap<ListarTarefasDto, ListarTarefasViewModel>();
         CreateMap<TarefasPorPrioridadeDto, TarefasPorPrioridadeViewModel>();
+        CreateMap<DetalhesTarefaDto, DetalhesTarefaViewModel>();
         CreateMap<DetalhesTarefaDto, EditarTarefaViewModel>();
         CreateMap<DetalhesTarefaDto, ExcluirTarefaViewModel>();
     }

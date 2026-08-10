@@ -193,6 +193,39 @@ public sealed class TarefaE2ETests : E2ETestsBase
     }
 
     [TestMethod]
+    public async Task DeveVisualizar_DadosDaTarefa_ESeusItens()
+    {
+        // Arranjo
+        await CadastrarTarefaAsync(
+            "Preparar apresentação",
+            "Alta",
+            "Criar os slides",
+            "Revisar o conteúdo"
+        );
+        TarefaListarPage listarPage = new(Page, UrlBase);
+        TarefaDetalhesPage detalhesPage = new(Page);
+
+        // Ação
+        await listarPage.VisualizarDetalhesAsync("Preparar apresentação");
+
+        // Asserção
+        await Expect(Page).ToHaveURLAsync(
+            new Regex($"{Regex.Escape(UrlBase)}/Tarefas/Detalhes/.*")
+        );
+        await Expect(detalhesPage.TituloDaTarefa("Preparar apresentação"))
+            .ToBeVisibleAsync();
+        await Expect(detalhesPage.Dado("Alta")).ToBeVisibleAsync();
+        await Expect(detalhesPage.Dado("Pendente")).ToBeVisibleAsync();
+        await Expect(detalhesPage.Dado("0%")).ToBeVisibleAsync();
+        await Expect(detalhesPage.ItemPorTitulo("Criar os slides")).ToBeVisibleAsync();
+        await Expect(detalhesPage.ItemPorTitulo("Revisar o conteúdo")).ToBeVisibleAsync();
+        await Expect(detalhesPage.StatusDoItem("Criar os slides", "Pendente"))
+            .ToBeVisibleAsync();
+        await Expect(detalhesPage.StatusDoItem("Revisar o conteúdo", "Pendente"))
+            .ToBeVisibleAsync();
+    }
+
+    [TestMethod]
     public async Task DeveExcluir_Tarefa_ESeusItensVinculados()
     {
         // Arranjo

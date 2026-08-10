@@ -173,6 +173,7 @@ public class ServicoTarefa
             tarefa.DataCriacao,
             tarefa.DataConclusao,
             tarefa.PercentualConcluido,
+            tarefa.StatusConclusao,
             itensDto
         ));
     }

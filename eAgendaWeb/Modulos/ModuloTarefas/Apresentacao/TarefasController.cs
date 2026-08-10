@@ -51,6 +51,24 @@ public class TarefasController(
     }
 
     [HttpGet]
+    public ActionResult Detalhes(Guid id)
+    {
+        Result<DetalhesTarefaDto> resultado = servicoTarefa.SelecionarPorId(id);
+
+        if (resultado.IsFailed)
+        {
+            TempData.AddErrorMessage(resultado);
+
+            return RedirectToAction(nameof(Listar));
+        }
+
+        DetalhesTarefaViewModel detalhesVm =
+            mapeador.Map<DetalhesTarefaViewModel>(resultado.Value);
+
+        return View(detalhesVm);
+    }
+
+    [HttpGet]
     public ActionResult Cadastrar()
     {
         return View();

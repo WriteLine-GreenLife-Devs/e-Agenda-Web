@@ -1,0 +1,62 @@
+@using eAgendaWeb.Modulos.ModuloTarefas.Apresentacao
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Detalhes da Tarefa";
+}
+
+@model DetalhesTarefaViewModel
+
+<div class="card border-primary-subtle shadow-sm mx-auto p-4">
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+        <h3 class="mb-0">@Model.Titulo</h3>
+        <span class="badge text-bg-primary rounded-pill">
+            @Model.Id.ToString().Substring(0, 8)
+        </span>
+    </div>
+
+    <dl class="row g-2 mb-4">
+        <dt class="col-sm-4 text-secondary fw-semibold">Prioridade</dt>
+        <dd class="col-sm-8">@Model.Prioridade</dd>
+
+        <dt class="col-sm-4 text-secondary fw-semibold">Criação</dt>
+        <dd class="col-sm-8">@Model.DataCriacao.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-4 text-secondary fw-semibold">Conclusão</dt>
+        <dd class="col-sm-8">@(Model.DataConclusao?.ToString("dd/MM/yyyy") ?? "-")</dd>
+
+        <dt class="col-sm-4 text-secondary fw-semibold">Status</dt>
+        <dd class="col-sm-8">@(Model.StatusConclusao ? "Concluída" : "Pendente")</dd>
+
+        <dt class="col-sm-4 text-secondary fw-semibold">Progresso</dt>
+        <dd class="col-sm-8">@Model.PercentualConcluido%</dd>
+    </dl>
+
+    <h4 class="mb-3">Itens</h4>
+
+    @if (Model.Itens.Count == 0)
+    {
+        <div class="alert alert-primary border-start border-primary border-4 rounded-3">
+            Nenhum item cadastrado nesta tarefa.
+        </div>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (ItemTarefaViewModel item in Model.Itens)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center item-tarefa">
+                    <span>@item.Titulo</span>
+                    <span class="badge @(item.Concluido ? "text-bg-success" : "text-bg-secondary") rounded-pill">
+                        @(item.Concluido ? "Concluído" : "Pendente")
+                    </span>
+                </li>
+            }
+        </ul>
+    }
+
+    <div class="d-flex justify-content-end mt-4">
+        <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Listar">
+            Voltar
+        </a>
+    </div>
+</div>

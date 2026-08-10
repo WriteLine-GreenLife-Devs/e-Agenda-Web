@@ -38,6 +38,7 @@ public record DetalhesTarefaDto(
     DateTime DataCriacao, 
     DateTime? DataConclusao, 
     decimal PercentualConcluido,
+    bool StatusConclusao,
     List<ItemTarefaDto> Itens
 );
 
