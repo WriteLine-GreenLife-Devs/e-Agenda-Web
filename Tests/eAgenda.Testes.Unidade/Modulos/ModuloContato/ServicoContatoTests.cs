@@ -229,6 +229,25 @@ public sealed class ServicoContatoTests
     }
 
     [TestMethod]
+    public void Editar_ComContatoInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid contatoId = Guid.NewGuid();
+        Mock<IRepositorioContato> repositorioContato = new();
+        repositorioContato.Setup(r => r.SelecionarPorId(contatoId)).Returns((Contato?)null);
+        ServicoContato servico = new(repositorioContato.Object);
+        EditarContatoDto dto = new(contatoId, "João", "49999990001", "joao@email.com");
+
+        // Ação
+        Result resultado = servico.Editar(dto);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrado", resultado.Errors.Single().Message);
+        repositorioContato.Verify(r => r.Editar(It.IsAny<Guid>(), It.IsAny<Contato>()), Times.Never);
+    }
+
+    [TestMethod]
     public void Editar_MantendoProprioEmailETelefone_DeveEditarContato()
     {
         // Arranjo
@@ -270,6 +289,41 @@ public sealed class ServicoContatoTests
     }
 
     [TestMethod]
+    public void SelecionarPorId_ComContatoInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid contatoId = Guid.NewGuid();
+        Mock<IRepositorioContato> repositorioContato = new();
+        repositorioContato.Setup(r => r.SelecionarPorId(contatoId)).Returns((Contato?)null);
+        ServicoContato servico = new(repositorioContato.Object);
+
+        // Ação
+        Result<ListarContatosDto> resultado = servico.SelecionarPorId(contatoId);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrado", resultado.Errors.Single().Message);
+    }
+
+    [TestMethod]
+    public void SelecionarPorId_ComCamposOpcionaisApenasComEspacos_DeveRetornarCamposNulos()
+    {
+        // Arranjo
+        Contato contato = CriarContato("João", "joao@email.com", "49999990001", "   ", "   ");
+        Mock<IRepositorioContato> repositorioContato = new();
+        repositorioContato.Setup(r => r.SelecionarPorId(contato.Id)).Returns(contato);
+        ServicoContato servico = new(repositorioContato.Object);
+
+        // Ação
+        Result<ListarContatosDto> resultado = servico.SelecionarPorId(contato.Id);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsSuccess);
+        Assert.IsNull(resultado.Value.Cargo);
+        Assert.IsNull(resultado.Value.Empresa);
+    }
+
+    [TestMethod]
     public void SelecionarTodos_ComContatosCadastrados_DeveRetornarTodos()
     {
         // Arranjo
@@ -288,6 +342,21 @@ public sealed class ServicoContatoTests
         Assert.HasCount(2, resultado);
         Assert.IsTrue(resultado.Any(c => c.Id == contatos[0].Id));
         Assert.IsTrue(resultado.Any(c => c.Id == contatos[1].Id));
+    }
+
+    [TestMethod]
+    public void SelecionarTodos_SemContatosCadastrados_DeveRetornarListaVazia()
+    {
+        // Arranjo
+        Mock<IRepositorioContato> repositorioContato = new();
+        repositorioContato.Setup(r => r.SelecionarTodos()).Returns([]);
+        ServicoContato servico = new(repositorioContato.Object);
+
+        // Ação
+        List<ListarContatosDto> resultado = servico.SelecionarTodos();
+
+        // Asserção
+        Assert.HasCount(0, resultado);
     }
 
     [TestMethod]
@@ -324,6 +393,24 @@ public sealed class ServicoContatoTests
         // Asserção
         Assert.IsTrue(resultado.IsFailed);
         Assert.Contains("compromissos vinculados", resultado.Errors.Single().Message);
+        repositorioContato.Verify(r => r.Excluir(It.IsAny<Guid>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void Excluir_ComContatoInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid contatoId = Guid.NewGuid();
+        Mock<IRepositorioContato> repositorioContato = new();
+        repositorioContato.Setup(r => r.SelecionarPorId(contatoId)).Returns((Contato?)null);
+        ServicoContato servico = new(repositorioContato.Object);
+
+        // Ação
+        Result resultado = servico.Excluir(contatoId);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrado", resultado.Errors.Single().Message);
         repositorioContato.Verify(r => r.Excluir(It.IsAny<Guid>()), Times.Never);
     }
 

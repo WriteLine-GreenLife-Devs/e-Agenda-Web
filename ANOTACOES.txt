@@ -98,14 +98,14 @@ B -> 47 + 38 + 32 + 25 = 142
 
 Testes adicionais:
 A:
-[x] Contatos (4)
-[x] Categorias (2)
-[x] Tarefas (4)
+[x] Contatos (9)
+[x] Categorias (7)
+[x] Tarefas (9)
 
-- 10 testes adicionais
+- 25 testes adicionais
 
 Somando os casos da planilha e os testes adicionais:
-A -> 126 + 10 = 136
+A -> 126 + 25 = 151
 
 Para informações mais detalhadas sobre implementação, checar o Guia_TESTES.md em /e-Agenda-Web/ReferenciasTestes/Guia_TESTES.md
 
@@ -116,13 +116,28 @@ Contatos:
 - Cadastrar_ComEmailDuplicadoContendoEspacos_DeveRetornarFalha
 - Editar_ComEmailUtilizadoPorOutroContatoDiferindoMaiusculasMinusculas_DeveRetornarFalha
 - Editar_ComTelefoneUtilizadoPorOutroContatoEmFormatoDiferente_DeveRetornarFalha
+- Editar_ComContatoInexistente_DeveRetornarFalha
+- SelecionarPorId_ComContatoInexistente_DeveRetornarFalha
+- SelecionarPorId_ComCamposOpcionaisApenasComEspacos_DeveRetornarCamposNulos
+- SelecionarTodos_SemContatosCadastrados_DeveRetornarListaVazia
+- Excluir_ComContatoInexistente_DeveRetornarFalha
 
 Categorias:
 - Cadastrar_ComTituloDuplicadoDiferindoMaiusculasMinusculas_DeveRetornarFalha
 - Editar_ComTituloDuplicadoDiferindoMaiusculasMinusculas_DeveRetornarFalha
+- Editar_ComCategoriaInexistente_DeveRetornarFalha
+- SelecionarPorId_ComCategoriaInexistente_DeveRetornarFalha
+- SelecionarDetalhesPorId_ComCategoriaInexistente_DeveRetornarFalha
+- SelecionarTodos_SemCategoriasCadastradas_DeveRetornarListaVazia
+- Excluir_ComCategoriaInexistente_DeveRetornarFalha
 
 Tarefas:
 - DeveVisualizar_DadosDaTarefa_ESeusItens
 - ConcluirItem_ComUmDeTresItens_DeveCalcularTrintaETresVirgulaTrintaETresPorCento
 - ConcluirItens_ComDoisDeTresItens_DeveCalcularSessentaESeisVirgulaSessentaESetePorCento
 - ConcluirItens_ComTresDeCincoItens_DeveCalcularSessentaPorCento
+- Editar_ComTarefaInexistente_DeveRetornarFalha
+- SelecionarTodos_SemTarefasCadastradas_DeveRetornarListaVazia
+- SelecionarAgrupadasPorPrioridade_SemTarefas_DeveRetornarTodasPrioridadesVazias
+- SelecionarPorId_ComTarefaInexistente_DeveRetornarFalha
+- Excluir_ComTarefaInexistente_DeveRetornarFalha

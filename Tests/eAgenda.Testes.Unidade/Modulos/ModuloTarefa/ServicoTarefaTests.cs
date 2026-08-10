@@ -192,6 +192,25 @@ public sealed class ServicoTarefaTests
     }
 
     [TestMethod]
+    public void Editar_ComTarefaInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid tarefaId = Guid.NewGuid();
+        Mock<IRepositorioTarefa> repositorioTarefa = new();
+        repositorioTarefa.Setup(r => r.SelecionarPorId(tarefaId)).Returns((Tarefa?)null);
+        ServicoTarefa servico = new(repositorioTarefa.Object);
+        EditarTarefaDto dto = new(tarefaId, "Estudar", PrioridadeTarefa.Normal, []);
+
+        // Ação
+        Result resultado = servico.Editar(dto);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrada", resultado.Errors.Single().Message);
+        repositorioTarefa.Verify(r => r.Editar(It.IsAny<Guid>(), It.IsAny<Tarefa>()), Times.Never);
+    }
+
+    [TestMethod]
     public void AtualizarStatusItem_ConcluindoUltimoItem_DeveConcluirTarefa()
     {
         // Arranjo
@@ -259,6 +278,21 @@ public sealed class ServicoTarefaTests
     }
 
     [TestMethod]
+    public void SelecionarTodos_SemTarefasCadastradas_DeveRetornarListaVazia()
+    {
+        // Arranjo
+        Mock<IRepositorioTarefa> repositorioTarefa = new();
+        repositorioTarefa.Setup(r => r.SelecionarTodos()).Returns([]);
+        ServicoTarefa servico = new(repositorioTarefa.Object);
+
+        // Ação
+        List<ListarTarefasDto> resultado = servico.SelecionarTodos();
+
+        // Asserção
+        Assert.HasCount(0, resultado);
+    }
+
+    [TestMethod]
     public void SelecionarPendentes_ComTarefasCadastradas_DeveRetornarSomentePendentes()
     {
         // Arranjo
@@ -319,6 +353,26 @@ public sealed class ServicoTarefaTests
     }
 
     [TestMethod]
+    public void SelecionarAgrupadasPorPrioridade_SemTarefas_DeveRetornarTodasPrioridadesVazias()
+    {
+        // Arranjo
+        Mock<IRepositorioTarefa> repositorioTarefa = new();
+        repositorioTarefa.Setup(r => r.SelecionarTodos()).Returns([]);
+        ServicoTarefa servico = new(repositorioTarefa.Object);
+
+        // Ação
+        List<TarefasPorPrioridadeDto> resultado = servico.SelecionarAgrupadasPorPrioridade();
+
+        // Asserção
+        Assert.HasCount(3, resultado);
+        CollectionAssert.AreEquivalent(
+            new[] { PrioridadeTarefa.Baixa, PrioridadeTarefa.Normal, PrioridadeTarefa.Alta },
+            resultado.Select(g => g.Prioridade).ToArray()
+        );
+        Assert.IsTrue(resultado.All(g => g.Tarefas.Count == 0));
+    }
+
+    [TestMethod]
     public void SelecionarPorId_ComTarefaEItensCadastrados_DeveRetornarSeusDados()
     {
         // Arranjo
@@ -345,6 +399,23 @@ public sealed class ServicoTarefaTests
     }
 
     [TestMethod]
+    public void SelecionarPorId_ComTarefaInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid tarefaId = Guid.NewGuid();
+        Mock<IRepositorioTarefa> repositorioTarefa = new();
+        repositorioTarefa.Setup(r => r.SelecionarPorId(tarefaId)).Returns((Tarefa?)null);
+        ServicoTarefa servico = new(repositorioTarefa.Object);
+
+        // Ação
+        Result<DetalhesTarefaDto> resultado = servico.SelecionarPorId(tarefaId);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrada", resultado.Errors.Single().Message);
+    }
+
+    [TestMethod]
     public void Excluir_ComItensVinculados_DeveExcluirTarefa()
     {
         // Arranjo
@@ -360,6 +431,24 @@ public sealed class ServicoTarefaTests
         // Asserção
         Assert.IsTrue(resultado.IsSuccess);
         repositorioTarefa.Verify(r => r.Excluir(tarefa.Id), Times.Once);
+    }
+
+    [TestMethod]
+    public void Excluir_ComTarefaInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid tarefaId = Guid.NewGuid();
+        Mock<IRepositorioTarefa> repositorioTarefa = new();
+        repositorioTarefa.Setup(r => r.SelecionarPorId(tarefaId)).Returns((Tarefa?)null);
+        ServicoTarefa servico = new(repositorioTarefa.Object);
+
+        // Ação
+        Result resultado = servico.Excluir(tarefaId);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrada", resultado.Errors.Single().Message);
+        repositorioTarefa.Verify(r => r.Excluir(It.IsAny<Guid>()), Times.Never);
     }
 
     private static Tarefa CriarTarefaComItem(bool concluido)

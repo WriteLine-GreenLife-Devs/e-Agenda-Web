@@ -204,6 +204,25 @@ public sealed class ServicoCategoriaTests
     }
 
     [TestMethod]
+    public void Editar_ComCategoriaInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid categoriaId = Guid.NewGuid();
+        Mock<IRepositorioCategoria> repositorioCategoria = new();
+        Mock<IRepositorioDespesa> repositorioDespesa = new();
+        repositorioCategoria.Setup(r => r.SelecionarPorId(categoriaId)).Returns((Categoria?)null);
+        ServicoCategoria servico = new(repositorioCategoria.Object, repositorioDespesa.Object);
+
+        // Ação
+        Result resultado = servico.Editar(new EditarCategoriaDto(categoriaId, "Alimentação"));
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrada", resultado.Errors.Single().Message);
+        repositorioCategoria.Verify(r => r.Editar(It.IsAny<Guid>(), It.IsAny<Categoria>()), Times.Never);
+    }
+
+    [TestMethod]
     public void SelecionarDetalhesPorId_ComDespesasVinculadas_DeveRetornarCategoriaEDespesas()
     {
         // Arranjo
@@ -239,6 +258,43 @@ public sealed class ServicoCategoriaTests
     }
 
     [TestMethod]
+    public void SelecionarPorId_ComCategoriaInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid categoriaId = Guid.NewGuid();
+        Mock<IRepositorioCategoria> repositorioCategoria = new();
+        Mock<IRepositorioDespesa> repositorioDespesa = new();
+        repositorioCategoria.Setup(r => r.SelecionarPorId(categoriaId)).Returns((Categoria?)null);
+        ServicoCategoria servico = new(repositorioCategoria.Object, repositorioDespesa.Object);
+
+        // Ação
+        Result<ListarCategoriasDto> resultado = servico.SelecionarPorId(categoriaId);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrada", resultado.Errors.Single().Message);
+    }
+
+    [TestMethod]
+    public void SelecionarDetalhesPorId_ComCategoriaInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid categoriaId = Guid.NewGuid();
+        Mock<IRepositorioCategoria> repositorioCategoria = new();
+        Mock<IRepositorioDespesa> repositorioDespesa = new();
+        repositorioCategoria.Setup(r => r.SelecionarPorId(categoriaId)).Returns((Categoria?)null);
+        ServicoCategoria servico = new(repositorioCategoria.Object, repositorioDespesa.Object);
+
+        // Ação
+        Result<DetalhesCategoriaDto> resultado = servico.SelecionarDetalhesPorId(categoriaId);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrada", resultado.Errors.Single().Message);
+        repositorioDespesa.Verify(r => r.SelecionarPorCategoria(It.IsAny<Guid>()), Times.Never);
+    }
+
+    [TestMethod]
     public void SelecionarTodos_ComCategoriasCadastradas_DeveRetornarTodasCategorias()
     {
         // Arranjo
@@ -262,6 +318,22 @@ public sealed class ServicoCategoriaTests
             new[] { "Alimentação", "Transporte" },
             resultado.Select(c => c.Titulo).ToArray()
         );
+    }
+
+    [TestMethod]
+    public void SelecionarTodos_SemCategoriasCadastradas_DeveRetornarListaVazia()
+    {
+        // Arranjo
+        Mock<IRepositorioCategoria> repositorioCategoria = new();
+        Mock<IRepositorioDespesa> repositorioDespesa = new();
+        repositorioCategoria.Setup(r => r.SelecionarTodos()).Returns([]);
+        ServicoCategoria servico = new(repositorioCategoria.Object, repositorioDespesa.Object);
+
+        // Ação
+        List<ListarCategoriasDto> resultado = servico.SelecionarTodos();
+
+        // Asserção
+        Assert.HasCount(0, resultado);
     }
 
     [TestMethod]
@@ -312,6 +384,25 @@ public sealed class ServicoCategoriaTests
         // Asserção
         Assert.IsTrue(resultado.IsFailed);
         Assert.Contains("despesas vinculadas", resultado.Errors.Single().Message);
+        repositorioCategoria.Verify(r => r.Excluir(It.IsAny<Guid>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void Excluir_ComCategoriaInexistente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid categoriaId = Guid.NewGuid();
+        Mock<IRepositorioCategoria> repositorioCategoria = new();
+        Mock<IRepositorioDespesa> repositorioDespesa = new();
+        repositorioCategoria.Setup(r => r.SelecionarPorId(categoriaId)).Returns((Categoria?)null);
+        ServicoCategoria servico = new(repositorioCategoria.Object, repositorioDespesa.Object);
+
+        // Ação
+        Result resultado = servico.Excluir(categoriaId);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.Contains("não encontrada", resultado.Errors.Single().Message);
         repositorioCategoria.Verify(r => r.Excluir(It.IsAny<Guid>()), Times.Never);
     }
 }
