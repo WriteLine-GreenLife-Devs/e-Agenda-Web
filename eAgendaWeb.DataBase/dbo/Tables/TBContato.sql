@@ -7,7 +7,7 @@ CREATE TABLE [dbo].[TBContato] (
     [Empresa]  NVARCHAR (100)    NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [CK_TBContato_Email] CHECK ([Email] LIKE '%_@_%._%'),
-    CONSTRAINT [CK_TBContato_Telefone] CHECK ([Telefone] LIKE '(__) ____-____' OR [Telefone] LIKE '(__) _ ____-____')
+    CONSTRAINT [CK_TBContato_Telefone] CHECK ([Telefone] LIKE '(__) ____-____' OR [Telefone] LIKE '(__) _____-____')
 );
 GO
 

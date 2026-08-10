@@ -1,6 +1,8 @@
 using System.Text.RegularExpressions;
 using Dapper;
 using eAgendaWeb.Modulos.ModuloCategorias.Infra;
+using eAgendaWeb.Modulos.ModuloCompromisso.Infra;
+using eAgendaWeb.Modulos.ModuloContatos.Infra;
 using eAgendaWeb.Modulos.ModuloDespesas.Infra;
 using Microsoft.Data.SqlClient;
 
@@ -16,6 +18,8 @@ public abstract class RepositorioBaseEmSqlTests
     protected SqlConnectionFactoryTests connectionFactory = null!;
     protected RepositorioCategoria repositorioCategoria = null!;
     protected RepositorioDespesa repositorioDespesa = null!;
+    protected RepositorioContato repositorioContato = null!;
+    protected RepositorioCompromisso repositorioCompromisso = null!;
 
     // Ganchos
     [TestInitialize]
@@ -35,9 +39,13 @@ public abstract class RepositorioBaseEmSqlTests
         ExecutarScript("TBCategoria.sql");
         ExecutarScript("TBDespesa.sql");
         ExecutarScript("TBDespesaCategoria.sql");
+        ExecutarScript("TBContato.sql");
+        ExecutarScript("TBCompromisso.sql");
 
         repositorioCategoria = new RepositorioCategoria(connectionFactory);
         repositorioDespesa = new RepositorioDespesa(connectionFactory);
+        repositorioContato = new RepositorioContato(connectionFactory);
+        repositorioCompromisso = new RepositorioCompromisso(connectionFactory);
     }
 
     [TestCleanup]

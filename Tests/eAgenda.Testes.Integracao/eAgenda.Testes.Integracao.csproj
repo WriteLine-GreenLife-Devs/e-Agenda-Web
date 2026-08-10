@@ -29,6 +29,12 @@
     <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBDespesaCategoria.sql"
           Link="Scripts\TBDespesaCategoria.sql"
           CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBContato.sql"
+          Link="Scripts\TBContato.sql"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\eAgendaWeb.DataBase\dbo\Tables\TBCompromisso.sql"
+          Link="Scripts\TBCompromisso.sql"
+          CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

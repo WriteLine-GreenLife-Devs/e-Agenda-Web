@@ -18,7 +18,7 @@ public sealed class ServicoContatoTests
         repositorioContato.Setup(r => r.Cadastrar(It.IsAny<Contato>()))
             .Callback<Contato>(contato => contatoCadastrado = contato);
         ServicoContato servico = new(repositorioContato.Object);
-        CadastrarContatoDto dto = new("João Silva", "49999990001", "joao@email.com", "Desenvolvedor", "GreenLife");
+        CadastrarContatoDto dto = new("João Silva", "49999990001", "joao@email.com", "Desenvolvedor", "Google");
 
         // Ação
         Result resultado = servico.Cadastrar(dto);
@@ -30,7 +30,7 @@ public sealed class ServicoContatoTests
         Assert.AreEqual("(49) 99999-0001", contatoCadastrado.Telefone);
         Assert.AreEqual("joao@email.com", contatoCadastrado.Email);
         Assert.AreEqual("Desenvolvedor", contatoCadastrado.Cargo);
-        Assert.AreEqual("GreenLife", contatoCadastrado.Empresa);
+        Assert.AreEqual("Google", contatoCadastrado.Empresa);
         repositorioContato.Verify(r => r.Cadastrar(It.IsAny<Contato>()), Times.Once);
     }
 
@@ -129,7 +129,7 @@ public sealed class ServicoContatoTests
         repositorioContato.Setup(r => r.Editar(contato.Id, It.IsAny<Contato>()))
             .Callback<Guid, Contato>((_, atualizado) => contatoEditado = atualizado);
         ServicoContato servico = new(repositorioContato.Object);
-        EditarContatoDto dto = new(contato.Id, "João Atualizado", "49999990002", "atualizado@email.com", "Analista", "GreenLife");
+        EditarContatoDto dto = new(contato.Id, "João Atualizado", "49999990002", "atualizado@email.com", "Analista", "Google");
 
         // Ação
         Result resultado = servico.Editar(dto);
@@ -187,7 +187,7 @@ public sealed class ServicoContatoTests
     public void SelecionarPorId_ComContatoExistente_DeveRetornarSeusDados()
     {
         // Arranjo
-        Contato contato = CriarContato("João", "joao@email.com", "(49) 99999-0001", "Analista", "GreenLife");
+        Contato contato = CriarContato("João", "joao@email.com", "(49) 99999-0001", "Analista", "Google");
         Mock<IRepositorioContato> repositorioContato = new();
         repositorioContato.Setup(r => r.SelecionarPorId(contato.Id)).Returns(contato);
         ServicoContato servico = new(repositorioContato.Object);
@@ -202,7 +202,7 @@ public sealed class ServicoContatoTests
         Assert.AreEqual("(49) 99999-0001", resultado.Value.Telefone);
         Assert.AreEqual("joao@email.com", resultado.Value.Email);
         Assert.AreEqual("Analista", resultado.Value.Cargo);
-        Assert.AreEqual("GreenLife", resultado.Value.Empresa);
+        Assert.AreEqual("Google", resultado.Value.Empresa);
     }
 
     [TestMethod]
