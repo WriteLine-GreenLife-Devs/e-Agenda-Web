@@ -1,0 +1,52 @@
+@using eAgendaWeb.Modulos.ModuloTarefas.Apresentacao
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Tarefas por Prioridade";
+}
+
+@model List<TarefasPorPrioridadeViewModel>
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+    <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Listar">
+        Voltar para Listagem
+    </a>
+</div>
+
+@foreach (TarefasPorPrioridadeViewModel grupo in Model)
+{
+    <section class="grupo-prioridade mb-4" data-prioridade="@grupo.Prioridade">
+        <h3 class="mb-3">@grupo.Prioridade</h3>
+
+        @if (grupo.Tarefas.Count == 0)
+        {
+            <div class="alert alert-primary border-start border-primary border-4 rounded-3">
+                Nenhuma tarefa nesta prioridade.
+            </div>
+        }
+        else
+        {
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">
+                @foreach (ListarTarefasViewModel tarefa in grupo.Tarefas)
+                {
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">@tarefa.Titulo</h5>
+
+                                <dl class="row g-2 mb-0">
+                                    <dt class="col-6 text-secondary fw-semibold">Status</dt>
+                                    <dd class="col-6">
+                                        @(tarefa.StatusConclusao ? "Concluída" : "Pendente")
+                                    </dd>
+
+                                    <dt class="col-6 text-secondary fw-semibold">Progresso</dt>
+                                    <dd class="col-6">@tarefa.PercentualConcluido%</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+}

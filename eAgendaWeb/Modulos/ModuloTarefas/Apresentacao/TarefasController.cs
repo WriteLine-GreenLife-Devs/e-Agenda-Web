@@ -39,6 +39,18 @@ public class TarefasController(
     }
 
     [HttpGet]
+    public ActionResult AgruparPorPrioridade()
+    {
+        List<TarefasPorPrioridadeDto> dtos =
+            servicoTarefa.SelecionarAgrupadasPorPrioridade();
+
+        List<TarefasPorPrioridadeViewModel> vms =
+            mapeador.Map<List<TarefasPorPrioridadeViewModel>>(dtos);
+
+        return View(vms);
+    }
+
+    [HttpGet]
     public ActionResult Cadastrar()
     {
         return View();

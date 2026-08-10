@@ -171,6 +171,28 @@ public sealed class TarefaE2ETests : E2ETestsBase
     }
 
     [TestMethod]
+    public async Task DeveVisualizar_Tarefas_AgrupadasPorPrioridade()
+    {
+        // Arranjo
+        await CadastrarTarefaAsync("Organizar documentos", "Baixa");
+        await CadastrarTarefaAsync("Responder mensagens", "Normal");
+        await CadastrarTarefaAsync("Enviar relatório", "Alta");
+        TarefaAgruparPage agruparPage = new(Page, UrlBase);
+
+        // Ação
+        await agruparPage.IrParaAsync();
+
+        // Asserção
+        await Expect(Page).ToHaveURLAsync(agruparPage.Url);
+        await Expect(agruparPage.TarefaDoGrupo("Baixa", "Organizar documentos"))
+            .ToBeVisibleAsync();
+        await Expect(agruparPage.TarefaDoGrupo("Normal", "Responder mensagens"))
+            .ToBeVisibleAsync();
+        await Expect(agruparPage.TarefaDoGrupo("Alta", "Enviar relatório"))
+            .ToBeVisibleAsync();
+    }
+
+    [TestMethod]
     public async Task DeveExcluir_Tarefa_ESeusItensVinculados()
     {
         // Arranjo

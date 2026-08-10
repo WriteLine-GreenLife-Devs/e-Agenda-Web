@@ -13,6 +13,11 @@ public record ListarTarefasViewModel(
     bool StatusConclusao
 );
 
+public record TarefasPorPrioridadeViewModel(
+    PrioridadeTarefa Prioridade,
+    List<ListarTarefasViewModel> Tarefas
+);
+
 public record CadastrarTarefaViewModel(
     [Required(ErrorMessage = "O título da tarefa é obrigatório.")]
     [StringLength(100, MinimumLength = 2, ErrorMessage = "O título deve ter entre 2 e 100 caracteres.")]

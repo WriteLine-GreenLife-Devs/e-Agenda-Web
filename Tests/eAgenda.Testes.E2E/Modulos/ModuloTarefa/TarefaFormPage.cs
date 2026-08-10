@@ -40,27 +40,16 @@ public sealed class TarefaFormPage(IPage page, string urlBase)
 
     public async Task ConcluirItemAsync(string titulo)
     {
-        TaskCompletionSource recarregamento = new(
-            TaskCreationOptions.RunContinuationsAsynchronously
+        await page.RunAndWaitForResponseAsync(
+            async () =>
+                await ItemPorTitulo(titulo).Locator("input[type='checkbox']").CheckAsync(),
+            response => response.Url.EndsWith("/Tarefas/AtualizarStatusItem") && response.Ok
         );
 
-        EventHandler<IPage> aoCarregar = (_, _) => recarregamento.TrySetResult();
-        page.Load += aoCarregar;
-
-        try
-        {
-            await page.RunAndWaitForResponseAsync(
-                async () =>
-                    await ItemPorTitulo(titulo).Locator("input[type='checkbox']").CheckAsync(),
-                response => response.Url.EndsWith("/Tarefas/AtualizarStatusItem") && response.Ok
-            );
-
-            await recarregamento.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        }
-        finally
-        {
-            page.Load -= aoCarregar;
-        }
+        await page.WaitForFunctionAsync(
+            "() => performance.getEntriesByType('navigation')[0]?.type === 'reload'"
+        );
+        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
     public async Task ConfirmarAsync()
