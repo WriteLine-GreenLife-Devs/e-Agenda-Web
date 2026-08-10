@@ -134,3 +134,8 @@ As asserções devem conferir o comportamento esperado, incluindo mensagens, val
 - Itens de Tarefa
 
 Cada módulo deve considerar os níveis indicados na planilha: domínio, casos de uso, integração e E2E.
+
+| Responsável | Integração | E2E |
+|---|---:|---:|
+| Dev A — Contatos, Categorias e Tarefas | 32 | 24 |
+| Dev B — Compromissos, Despesas e Itens de Tarefa | 32 | 25 |
