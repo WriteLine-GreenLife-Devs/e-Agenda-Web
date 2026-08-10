@@ -34,4 +34,9 @@ public abstract class E2ETestsBase : PageTest
     {
         aplicacao.ExecutarComando(comando, parametros);
     }
+
+    protected T ExecutarConsulta<T>(string consulta, object? parametros = null)
+    {
+        return aplicacao.ExecutarConsulta<T>(consulta, parametros);
+    }
 }

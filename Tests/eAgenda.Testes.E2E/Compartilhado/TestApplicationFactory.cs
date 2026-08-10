@@ -48,6 +48,12 @@ public sealed class TestApplicationFactory : WebApplicationFactory<Program>
         conexao.Execute(comando, parametros);
     }
 
+    public T ExecutarConsulta<T>(string consulta, object? parametros = null)
+    {
+        using SqlConnection conexao = new(connectionString);
+        return conexao.QuerySingle<T>(consulta, parametros);
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
