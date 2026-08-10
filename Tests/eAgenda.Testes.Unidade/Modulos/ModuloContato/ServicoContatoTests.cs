@@ -97,6 +97,27 @@ public sealed class ServicoContatoTests
     }
 
     [TestMethod]
+    public void Cadastrar_ComEmailDuplicadoContendoEspacos_DeveRetornarFalha()
+    {
+        // Arranjo
+        Mock<IRepositorioContato> repositorioContato = new();
+        repositorioContato.Setup(r => r.SelecionarTodos()).Returns([
+            CriarContato("Outro", "outro@email.com", "47999990000")
+        ]);
+        ServicoContato servico = new(repositorioContato.Object);
+        CadastrarContatoDto dto = new("Novo", "48999990002", "  outro@email.com  ");
+
+        // Ação
+        Result resultado = servico.Cadastrar(dto);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.AreEqual(nameof(CadastrarContatoDto.Email), resultado.Errors.Single().Metadata["Campo"]);
+        Assert.Contains("email", resultado.Errors.Single().Message);
+        repositorioContato.Verify(r => r.Cadastrar(It.IsAny<Contato>()), Times.Never);
+    }
+
+    [TestMethod]
     public void Cadastrar_ComTelefoneDuplicado_DeveRetornarFalha()
     {
         // Arranjo
@@ -161,6 +182,49 @@ public sealed class ServicoContatoTests
         // Asserção
         Assert.IsTrue(resultado.IsFailed);
         Assert.AreEqual(nameof(EditarContatoDto.Email), resultado.Errors.Single().Metadata["Campo"]);
+        repositorioContato.Verify(r => r.Editar(It.IsAny<Guid>(), It.IsAny<Contato>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void Editar_ComEmailUtilizadoPorOutroContatoDiferindoMaiusculasMinusculas_DeveRetornarFalha()
+    {
+        // Arranjo
+        Contato contato = CriarContato("João", "joao@email.com", "49999990001");
+        Contato outroContato = CriarContato("Maria", "maria@email.com", "49999990002");
+        Mock<IRepositorioContato> repositorioContato = new();
+        repositorioContato.Setup(r => r.SelecionarPorId(contato.Id)).Returns(contato);
+        repositorioContato.Setup(r => r.SelecionarTodos()).Returns([contato, outroContato]);
+        ServicoContato servico = new(repositorioContato.Object);
+        EditarContatoDto dto = new(contato.Id, "João", "49999990001", "MARIA@email.com");
+
+        // Ação
+        Result resultado = servico.Editar(dto);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.AreEqual(nameof(EditarContatoDto.Email), resultado.Errors.Single().Metadata["Campo"]);
+        repositorioContato.Verify(r => r.Editar(It.IsAny<Guid>(), It.IsAny<Contato>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void Editar_ComTelefoneUtilizadoPorOutroContatoEmFormatoDiferente_DeveRetornarFalha()
+    {
+        // Arranjo
+        Contato contato = CriarContato("João", "joao@email.com", "49999990001");
+        Contato outroContato = CriarContato("Maria", "maria@email.com", "(49) 99999-0002");
+        Mock<IRepositorioContato> repositorioContato = new();
+        repositorioContato.Setup(r => r.SelecionarPorId(contato.Id)).Returns(contato);
+        repositorioContato.Setup(r => r.SelecionarTodos()).Returns([contato, outroContato]);
+        ServicoContato servico = new(repositorioContato.Object);
+        EditarContatoDto dto = new(contato.Id, "João", "49999990002", "joao@email.com");
+
+        // Ação
+        Result resultado = servico.Editar(dto);
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.AreEqual(nameof(EditarContatoDto.Telefone), resultado.Errors.Single().Metadata["Campo"]);
+        Assert.Contains("telefone", resultado.Errors.Single().Message);
         repositorioContato.Verify(r => r.Editar(It.IsAny<Guid>(), It.IsAny<Contato>()), Times.Never);
     }
 

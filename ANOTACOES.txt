@@ -98,14 +98,14 @@ B -> 47 + 38 + 32 + 25 = 142
 
 Testes adicionais:
 A:
-[x] Contatos (1)
+[x] Contatos (4)
 [x] Categorias (2)
 [x] Tarefas (1)
 
-- 4 testes adicionais
+- 7 testes adicionais
 
 Somando os casos da planilha e os testes adicionais:
-A -> 126 + 4 = 130
+A -> 126 + 7 = 133
 
 Para informações mais detalhadas sobre implementação, checar o Guia_TESTES.md em /e-Agenda-Web/ReferenciasTestes/Guia_TESTES.md
 
@@ -113,6 +113,9 @@ Testes adicionais implementados:
 
 Contatos:
 - DeveCadastrar_Contato_ComNomeNoLimiteMinimo
+- Cadastrar_ComEmailDuplicadoContendoEspacos_DeveRetornarFalha
+- Editar_ComEmailUtilizadoPorOutroContatoDiferindoMaiusculasMinusculas_DeveRetornarFalha
+- Editar_ComTelefoneUtilizadoPorOutroContatoEmFormatoDiferente_DeveRetornarFalha
 
 Categorias:
 - Cadastrar_ComTituloDuplicadoDiferindoMaiusculasMinusculas_DeveRetornarFalha
