@@ -29,3 +29,16 @@ public record ExcluirCategoriaViewModel(
     Guid Id,
     string Titulo
 );
+
+public record ListarDespesaDaCategoriaViewModel(
+    Guid Id,
+    string Descricao,
+    DateTime DataOcorrencia,
+    decimal Valor
+);
+
+public record DetalhesCategoriaViewModel(
+    Guid Id,
+    string Titulo,
+    IReadOnlyList<ListarDespesaDaCategoriaViewModel> Despesas
+);

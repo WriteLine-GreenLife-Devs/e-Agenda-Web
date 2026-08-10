@@ -16,5 +16,7 @@ public class CategoriaProfile : Profile
         CreateMap<ListarCategoriasDto, ListarCategoriasViewModel>();
         CreateMap<ListarCategoriasDto, EditarCategoriaViewModel>();
         CreateMap<ListarCategoriasDto, ExcluirCategoriaViewModel>();
+        CreateMap<ListarDespesaDaCategoriaDto, ListarDespesaDaCategoriaViewModel>();
+        CreateMap<DetalhesCategoriaDto, DetalhesCategoriaViewModel>();
     }
 }

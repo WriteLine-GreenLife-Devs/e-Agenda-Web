@@ -1,0 +1,54 @@
+@using eAgendaWeb.Modulos.ModuloCategorias.Apresentacao
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Detalhes da Categoria";
+}
+
+@model DetalhesCategoriaViewModel
+
+<div class="card border-primary-subtle shadow-sm mx-auto p-4">
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+        <h3 class="mb-0">@Model.Titulo</h3>
+        <span class="badge text-bg-primary rounded-pill">
+            @Model.Id.ToString().Substring(0, 8)
+        </span>
+    </div>
+
+    <h4 class="mb-3">Despesas</h4>
+
+    @if (Model.Despesas.Count == 0)
+    {
+        <div class="alert alert-primary border-start border-primary border-4 rounded-3">
+            Nenhuma despesa vinculada a esta categoria.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">
+            @foreach (ListarDespesaDaCategoriaViewModel despesa in Model.Despesas)
+            {
+                <div class="col">
+                    <div class="card h-100 despesa-categoria">
+                        <div class="card-body">
+                            <h5 class="card-title">@despesa.Descricao</h5>
+
+                            <dl class="row g-2 mb-0">
+                                <dt class="col-6 text-secondary fw-semibold">Data</dt>
+                                <dd class="col-6">@despesa.DataOcorrencia.ToString("dd/MM/yyyy")</dd>
+
+                                <dt class="col-6 text-secondary fw-semibold">Valor</dt>
+                                <dd class="col-6">@despesa.Valor.ToString("C")</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="d-flex justify-content-end mt-4">
+        <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Listar">
+            Voltar
+        </a>
+    </div>
+</div>

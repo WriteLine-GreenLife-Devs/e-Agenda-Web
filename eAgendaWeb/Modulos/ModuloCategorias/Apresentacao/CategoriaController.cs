@@ -20,6 +20,25 @@ public class CategoriasController(ServicoCategoria servicoCategoria, IMapper map
     }
 
     [HttpGet]
+    public ActionResult Detalhes(Guid id)
+    {
+        Result<DetalhesCategoriaDto> resultado =
+            servicoCategoria.SelecionarDetalhesPorId(id);
+
+        if (resultado.IsFailed)
+        {
+            TempData.AddErrorMessage(resultado);
+
+            return RedirectToAction(nameof(Listar));
+        }
+
+        DetalhesCategoriaViewModel detalhesVm =
+            mapeador.Map<DetalhesCategoriaViewModel>(resultado.Value);
+
+        return View(detalhesVm);
+    }
+
+    [HttpGet]
     public ActionResult Cadastrar()
     {
         CadastrarCategoriaViewModel cadastrarVm =

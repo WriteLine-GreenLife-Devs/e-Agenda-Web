@@ -78,6 +78,93 @@ public sealed class CategoriaE2ETests : E2ETestsBase
     }
 
     [TestMethod]
+    public async Task DeveVisualizar_Despesas_DeUmaCategoriaEspecifica()
+    {
+        // Arranjo
+        Guid categoriaId = Guid.CreateVersion7();
+        Guid primeiraDespesaId = Guid.CreateVersion7();
+        Guid segundaDespesaId = Guid.CreateVersion7();
+
+        ExecutarComando(
+            "INSERT INTO TBCategoria (Id, Titulo) VALUES (@Id, @Titulo)",
+            new { Id = categoriaId, Titulo = "Alimentação" }
+        );
+        ExecutarComando(
+            """
+            INSERT INTO TBDespesa
+                (Id, Descricao, DataOcorrencia, Valor, FormaPagamento, QuantidadeParcelas)
+            VALUES
+                (@Id, @Descricao, @DataOcorrencia, @Valor, @FormaPagamento, @QuantidadeParcelas)
+            """,
+            new
+            {
+                Id = primeiraDespesaId,
+                Descricao = "Almoço",
+                DataOcorrencia = DateTime.Today,
+                Valor = 45.90m,
+                FormaPagamento = 1,
+                QuantidadeParcelas = (int?)null
+            }
+        );
+        ExecutarComando(
+            """
+            INSERT INTO TBDespesa
+                (Id, Descricao, DataOcorrencia, Valor, FormaPagamento, QuantidadeParcelas)
+            VALUES
+                (@Id, @Descricao, @DataOcorrencia, @Valor, @FormaPagamento, @QuantidadeParcelas)
+            """,
+            new
+            {
+                Id = segundaDespesaId,
+                Descricao = "Jantar",
+                DataOcorrencia = DateTime.Today.AddDays(-1),
+                Valor = 72.50m,
+                FormaPagamento = 1,
+                QuantidadeParcelas = (int?)null
+            }
+        );
+        ExecutarComando(
+            """
+            INSERT INTO TBDespesaCategoria (Id, DespesaId, CategoriaId)
+            VALUES
+                (@PrimeiroVinculoId, @PrimeiraDespesaId, @CategoriaId),
+                (@SegundoVinculoId, @SegundaDespesaId, @CategoriaId)
+            """,
+            new
+            {
+                PrimeiroVinculoId = Guid.CreateVersion7(),
+                SegundoVinculoId = Guid.CreateVersion7(),
+                PrimeiraDespesaId = primeiraDespesaId,
+                SegundaDespesaId = segundaDespesaId,
+                CategoriaId = categoriaId
+            }
+        );
+
+        CategoriaListarPage listarPage = new(Page, UrlBase);
+        CategoriaDetalhesPage detalhesPage = new(Page);
+        await listarPage.IrParaAsync();
+
+        // Ação
+        await listarPage.VisualizarDetalhesAsync("Alimentação");
+
+        // Asserção
+        await Expect(Page).ToHaveURLAsync(
+            new Regex($"{Regex.Escape(UrlBase)}/Categorias/Detalhes/.*")
+        );
+        await Expect(detalhesPage.TituloDaCategoria("Alimentação")).ToBeVisibleAsync();
+        await Expect(detalhesPage.DespesaPorDescricao("Almoço")).ToBeVisibleAsync();
+        await Expect(detalhesPage.DespesaPorDescricao("Jantar")).ToBeVisibleAsync();
+        await Expect(detalhesPage.DadosDaDespesa(
+            "Almoço",
+            DateTime.Today.ToString("dd/MM/yyyy")
+        )).ToBeVisibleAsync();
+        await Expect(detalhesPage.DadosDaDespesa(
+            "Jantar",
+            DateTime.Today.AddDays(-1).ToString("dd/MM/yyyy")
+        )).ToBeVisibleAsync();
+    }
+
+    [TestMethod]
     public async Task DeveExcluir_Categoria_SemDespesasVinculadas()
     {
         // Arranjo
