@@ -106,6 +106,17 @@ A:
 
 Somando os casos da planilha e os testes adicionais:
 A -> 126 + 4 = 130
-B -> 142 + 0 = 142
 
 Para informações mais detalhadas sobre implementação, checar o Guia_TESTES.md em /e-Agenda-Web/ReferenciasTestes/Guia_TESTES.md
+
+Testes adicionais implementados:
+
+Contatos:
+- DeveCadastrar_Contato_ComNomeNoLimiteMinimo
+
+Categorias:
+- Cadastrar_ComTituloDuplicadoDiferindoMaiusculasMinusculas_DeveRetornarFalha
+- Editar_ComTituloDuplicadoDiferindoMaiusculasMinusculas_DeveRetornarFalha
+
+Tarefas:
+- DeveVisualizar_DadosDaTarefa_ESeusItens
