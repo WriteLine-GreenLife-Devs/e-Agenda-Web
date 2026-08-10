@@ -5,6 +5,8 @@ namespace eAgenda.Testes.E2E.Modulos.ModuloTarefa;
 public sealed class TarefaListarPage(IPage page, string urlBase)
 {
     public string Url => $"{urlBase}/Tarefas/Listar";
+    public string UrlPendentes => $"{urlBase}/Tarefas/ListarPendentes";
+    public string UrlConcluidas => $"{urlBase}/Tarefas/ListarConcluidas";
 
     public ILocator EstadoVazio => page.GetByText(
         "Nenhuma tarefa cadastrada.",
@@ -22,6 +24,16 @@ public sealed class TarefaListarPage(IPage page, string urlBase)
     public async Task IrParaAsync()
     {
         await page.GotoAsync(Url);
+    }
+
+    public async Task IrParaPendentesAsync()
+    {
+        await page.GotoAsync(UrlPendentes);
+    }
+
+    public async Task IrParaConcluidasAsync()
+    {
+        await page.GotoAsync(UrlConcluidas);
     }
 
     public async Task EditarAsync(string titulo)

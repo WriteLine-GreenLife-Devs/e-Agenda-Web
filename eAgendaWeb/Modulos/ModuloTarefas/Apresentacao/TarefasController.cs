@@ -21,6 +21,24 @@ public class TarefasController(
     }
 
     [HttpGet]
+    public ActionResult ListarPendentes()
+    {
+        List<ListarTarefasDto> dtos = servicoTarefa.SelecionarPendentes();
+        List<ListarTarefasViewModel> vms = mapeador.Map<List<ListarTarefasViewModel>>(dtos);
+
+        return View(nameof(Listar), vms);
+    }
+
+    [HttpGet]
+    public ActionResult ListarConcluidas()
+    {
+        List<ListarTarefasDto> dtos = servicoTarefa.SelecionarConcluidas();
+        List<ListarTarefasViewModel> vms = mapeador.Map<List<ListarTarefasViewModel>>(dtos);
+
+        return View(nameof(Listar), vms);
+    }
+
+    [HttpGet]
     public ActionResult Cadastrar()
     {
         return View();

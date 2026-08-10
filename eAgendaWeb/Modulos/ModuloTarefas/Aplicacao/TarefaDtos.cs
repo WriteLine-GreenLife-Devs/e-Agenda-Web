@@ -27,7 +27,8 @@ public record ListarTarefasDto(
     PrioridadeTarefa Prioridade, 
     DateTime DataCriacao, 
     DateTime? DataConclusao, 
-    decimal PercentualConcluido
+    decimal PercentualConcluido,
+    bool StatusConclusao
 );
 
 public record DetalhesTarefaDto(

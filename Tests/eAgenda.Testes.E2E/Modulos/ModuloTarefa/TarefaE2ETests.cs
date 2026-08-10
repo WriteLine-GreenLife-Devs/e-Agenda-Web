@@ -23,6 +23,8 @@ public sealed class TarefaE2ETests : E2ETestsBase
         await Expect(listarPage.TituloDaTarefa("Preparar apresentação")).ToBeVisibleAsync();
         await Expect(listarPage.DadosDaTarefa("Preparar apresentação", "Normal"))
             .ToBeVisibleAsync();
+        await Expect(listarPage.DadosDaTarefa("Preparar apresentação", "Pendente"))
+            .ToBeVisibleAsync();
     }
 
     [TestMethod]
@@ -109,6 +111,8 @@ public sealed class TarefaE2ETests : E2ETestsBase
         // Asserção
         await Expect(listarPage.DadosDaTarefa("Preparar apresentação", "100,00%"))
             .ToBeVisibleAsync();
+        await Expect(listarPage.DadosDaTarefa("Preparar apresentação", "Concluída"))
+            .ToBeVisibleAsync();
         await Expect(listarPage.DadosDaTarefa(
             "Preparar apresentação",
             DateTime.Today.ToString("dd/MM/yyyy")
@@ -130,6 +134,40 @@ public sealed class TarefaE2ETests : E2ETestsBase
         await Expect(Page).ToHaveURLAsync(listarPage.Url);
         await Expect(listarPage.TituloDaTarefa("Organizar documentos")).ToBeVisibleAsync();
         await Expect(listarPage.TituloDaTarefa("Enviar relatório")).ToBeVisibleAsync();
+    }
+
+    [TestMethod]
+    public async Task DeveListar_ApenasTarefas_Pendentes()
+    {
+        // Arranjo
+        await CadastrarTarefaAsync("Organizar documentos", "Baixa");
+        await CadastrarTarefaConcluidaAsync("Enviar relatório", "Alta");
+        TarefaListarPage listarPage = new(Page, UrlBase);
+
+        // Ação
+        await listarPage.IrParaPendentesAsync();
+
+        // Asserção
+        await Expect(Page).ToHaveURLAsync(listarPage.UrlPendentes);
+        await Expect(listarPage.TituloDaTarefa("Organizar documentos")).ToBeVisibleAsync();
+        await Expect(listarPage.TituloDaTarefa("Enviar relatório")).Not.ToBeVisibleAsync();
+    }
+
+    [TestMethod]
+    public async Task DeveListar_ApenasTarefas_Concluidas()
+    {
+        // Arranjo
+        await CadastrarTarefaAsync("Organizar documentos", "Baixa");
+        await CadastrarTarefaConcluidaAsync("Enviar relatório", "Alta");
+        TarefaListarPage listarPage = new(Page, UrlBase);
+
+        // Ação
+        await listarPage.IrParaConcluidasAsync();
+
+        // Asserção
+        await Expect(Page).ToHaveURLAsync(listarPage.UrlConcluidas);
+        await Expect(listarPage.TituloDaTarefa("Enviar relatório")).ToBeVisibleAsync();
+        await Expect(listarPage.TituloDaTarefa("Organizar documentos")).Not.ToBeVisibleAsync();
     }
 
     [TestMethod]

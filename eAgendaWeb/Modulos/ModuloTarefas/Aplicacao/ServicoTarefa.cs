@@ -205,7 +205,8 @@ public class ServicoTarefa
             tarefa.Prioridade,
             tarefa.DataCriacao,
             tarefa.DataConclusao,
-            tarefa.PercentualConcluido
+            tarefa.PercentualConcluido,
+            tarefa.StatusConclusao
         );
     }
 }

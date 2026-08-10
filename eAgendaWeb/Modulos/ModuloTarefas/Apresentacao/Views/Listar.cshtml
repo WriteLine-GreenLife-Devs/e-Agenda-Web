@@ -6,9 +6,20 @@
 
 @model List<ListarTarefasViewModel>
 
-<a class="btn btn-outline-primary rounded-pill px-4 mb-3" asp-action="Cadastrar">
-    Cadastrar Nova
-</a>
+<div class="d-flex flex-wrap gap-2 mb-3">
+    <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Cadastrar">
+        Cadastrar Nova
+    </a>
+    <a class="btn btn-outline-primary rounded-pill px-4" asp-action="Listar">
+        Todas
+    </a>
+    <a class="btn btn-outline-primary rounded-pill px-4" asp-action="ListarPendentes">
+        Pendentes
+    </a>
+    <a class="btn btn-outline-primary rounded-pill px-4" asp-action="ListarConcluidas">
+        Concluídas
+    </a>
+</div>
 
 @if (Model.Count == 0)
 {
@@ -60,6 +71,13 @@ else
                             </dt>
                             <dd class="col-6">
                                 @p.PercentualConcluido%
+                            </dd>
+
+                            <dt class="col-6 text-secondary fw-semibold">
+                                Status
+                            </dt>
+                            <dd class="col-6">
+                                @(p.StatusConclusao ? "Concluída" : "Pendente")
                             </dd>
                         </dl>
 

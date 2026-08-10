@@ -13,7 +13,7 @@ public record ListarContatosViewModel(
 
 public record CadastrarContatoViewModel(
     [Required(ErrorMessage = "O campo \"Nome\" deve ser preenchido.")]
-    [StringLength(100, MinimumLength = 3, ErrorMessage = "O campo \"Nome\" deve conter entre 3 e 100 caracteres.")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "O campo \"Nome\" deve conter entre 2 e 100 caracteres.")]
     string Nome,
 
     [Required(ErrorMessage = "O campo \"Telefone\" deve ser preenchido.")]
@@ -24,7 +24,7 @@ public record CadastrarContatoViewModel(
     [EmailAddress(ErrorMessage = "O campo \"Email\" deve ser um email válido.")]
     string Email,
 
-    [StringLength(50, ErrorMessage = "O campo \"Cargo\" deve conter no máximo 50 caracteres.")]
+    [StringLength(100, ErrorMessage = "O campo \"Cargo\" deve conter no máximo 100 caracteres.")]
     string? Cargo = null,
 
     [StringLength(100, ErrorMessage = "O campo \"Empresa\" deve conter no máximo 100 caracteres.")]
@@ -35,7 +35,7 @@ public record EditarContatoViewModel(
     Guid Id,
 
     [Required(ErrorMessage = "O campo \"Nome\" deve ser preenchido.")]
-    [StringLength(100, MinimumLength = 3, ErrorMessage = "O campo \"Nome\" deve conter entre 3 e 100 caracteres.")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "O campo \"Nome\" deve conter entre 2 e 100 caracteres.")]
     string Nome,
 
     [Required(ErrorMessage = "O campo \"Telefone\" deve ser preenchido.")]
@@ -46,7 +46,7 @@ public record EditarContatoViewModel(
     [EmailAddress(ErrorMessage = "O campo \"Email\" deve ser um email válido.")]
     string Email,
 
-    [StringLength(50, ErrorMessage = "O campo \"Cargo\" deve conter no máximo 50 caracteres.")]
+    [StringLength(100, ErrorMessage = "O campo \"Cargo\" deve conter no máximo 100 caracteres.")]
     string? Cargo = null,
 
     [StringLength(100, ErrorMessage = "O campo \"Empresa\" deve conter no máximo 100 caracteres.")]

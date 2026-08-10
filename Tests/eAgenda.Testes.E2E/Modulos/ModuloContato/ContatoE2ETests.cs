@@ -38,6 +38,27 @@ public sealed class ContatoE2ETests : E2ETestsBase
     }
 
     [TestMethod]
+    public async Task DeveCadastrar_Contato_ComNomeNoLimiteMinimo()
+    {
+        // Arranjo
+        ContatoFormPage formPage = new(Page, UrlBase);
+        ContatoListarPage listarPage = new(Page, UrlBase);
+
+        // Ação
+        await formPage.IrParaCadastroAsync();
+        await formPage.PreencherAsync(
+            "Al",
+            "(49) 99999-0001",
+            "al@email.com"
+        );
+        await formPage.ConfirmarAsync();
+
+        // Asserção
+        await Expect(Page).ToHaveURLAsync(listarPage.Url);
+        await Expect(listarPage.NomeDoContato("Al")).ToBeVisibleAsync();
+    }
+
+    [TestMethod]
     public async Task DeveImpedir_Cadastro_DeContato_ComEmailDuplicado()
     {
         // Arranjo
