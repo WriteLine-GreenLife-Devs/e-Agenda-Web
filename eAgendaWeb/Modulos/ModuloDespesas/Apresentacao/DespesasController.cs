@@ -40,6 +40,12 @@ public class DespesasController(
     [HttpPost]
     public ActionResult Cadastrar(CadastrarDespesaViewModel vm)
     {
+        if (vm.DataOcorrencia == default)
+        {
+            ModelState.Remove(nameof(vm.DataOcorrencia));
+            vm = vm with { DataOcorrencia = DateTime.Now.Date };
+        }
+
         if (!ModelState.IsValid)
         {
             vm = vm with { CategoriasDisponiveis = ObterCategorias() };

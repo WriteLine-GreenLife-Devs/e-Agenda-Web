@@ -63,6 +63,9 @@ public sealed class Compromisso : EntidadeBase<Compromisso>
         if (string.IsNullOrWhiteSpace(HoraTermino.ToString()))
             erros.Add("O campo \"Hora de Término\" deve ser preenchido.");
 
+        else if (HoraTermino <= HoraInicio)
+            erros.Add("O campo \"Hora de Término\" deve ser posterior ao horário de início.");
+
         if (string.IsNullOrWhiteSpace(TipoCompromisso.ToString()))
             erros.Add("O campo \"Tipo de Compromisso\" deve ser preenchido.");
 
@@ -71,6 +74,11 @@ public sealed class Compromisso : EntidadeBase<Compromisso>
 
         if (string.IsNullOrWhiteSpace(Link) && TipoCompromisso == TipoCompromisso.Remoto)
             erros.Add("O campo \"Link\" deve ser preenchido para compromissos remotos.");
+
+        else if (TipoCompromisso == TipoCompromisso.Remoto &&
+                 (!Uri.TryCreate(Link, UriKind.Absolute, out Uri? linkValido) ||
+                  (linkValido.Scheme != Uri.UriSchemeHttp && linkValido.Scheme != Uri.UriSchemeHttps)))
+            erros.Add("O campo \"Link\" deve conter um endereço válido.");
 
         return erros;
     }

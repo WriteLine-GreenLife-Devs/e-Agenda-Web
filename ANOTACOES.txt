@@ -31,28 +31,28 @@ Regras: conclusão recalcula percentual do parent, remoção recalcula, último 
 Sugestão de atribuições para testes de domínio:
 
 A:
-[x]Contatos (14 casos de domínio)
-[x]Categorias (8 casos de domínio)
-[x]Tarefas (12 casos de domínio)
+[x] Contatos (14)
+[x] Categorias (8)
+[x] Tarefas (12)
 
 B:
-[]Compromissos (21 casos de domínio)
-[]Despesas (15 casos de domínio)
-[]Itens de Tarefa (11 casos de domínio)
+[ ] Compromissos (21)
+[ ] Despesas (15)
+[ ] Itens de Tarefa (11)
 
 - 81 casos de regras de domínio na planilha
 
 Sugestão de atribuições para testes de serviço:
 
 A:
-[x]Contatos (12 casos de uso)
-[x]Categorias (9 casos de uso)
-[x]Tarefas (15 casos de uso)
+[x] Contatos (12)
+[x] Categorias (9)
+[x] Tarefas (15)
 
 B:
-[]Compromissos (17 casos de uso)
-[]Despesas (11 casos de uso)
-[]Itens de Tarefa (10 casos de uso)
+[ ] Compromissos (17)
+[ ] Despesas (11)
+[ ] Itens de Tarefa (10)
 
 - 74 casos marcados para casos de uso na planilha
 
@@ -60,12 +60,40 @@ Somando as marcações de domínio e casos de uso:
 A -> 34 + 36 = 70
 B -> 47 + 38 = 85
 
-Divisão dos testes de integração:
-A -> Contatos (11), Categorias (8), Tarefas (13)
-B -> Compromissos (16), Despesas (8), Itens de Tarefa (8)
+Sugestão de atribuições para testes de integração:
+A:
+[x] Contatos (11)
+[x] Categorias (8)
+[x] Tarefas (13)
 
-Divisão dos testes E2E:
-A -> Contatos (7), Categorias (7), Tarefas (10)
-B -> Compromissos (11), Despesas (9), Itens de Tarefa (5)
+B:
+[ ] Compromissos (16)
+[ ] Despesas (8)
+[ ] Itens de Tarefa (8)
+
+- 64 casos marcados para casos de integração na planilha
+
+Somando as marcações de domínio, casos de uso e atribuições:
+A -> 34 + 36 + 32 = 102
+B -> 47 + 38 + 32 = 117
+
+Sugestão de atribuições para testes E2E:
+A:
+[x] Contatos (7)
+[x] Categorias (7)
+[x] Tarefas (10)
+
+B:
+[ ] Compromissos (11)
+[ ] Despesas (9)
+[ ] Itens de Tarefa (5)
+
+- 49 casos marcados para casos End-to-End na planilha
+
+Somando as marcações de domínio, casos de uso, atribuições e E2E:
+A -> 34 + 36 + 32 + 24 = 126
+B -> 47 + 38 + 32 + 25 = 142
+
+- 268 casos totais
 
 Para informações mais detalhadas sobre implementação, checar o Guia_TESTES.md em /e-Agenda-Web/ReferenciasTestes/Guia_TESTES.md

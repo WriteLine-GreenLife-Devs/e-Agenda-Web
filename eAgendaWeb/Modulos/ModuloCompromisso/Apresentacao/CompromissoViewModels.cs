@@ -19,7 +19,7 @@ public record ListarCompromissosViewModel(
 
 public record CadastrarCompromissoViewModel(
     [Required(ErrorMessage = "O campo \"Assunto\" deve ser preenchido.")]
-    [StringLength(150, MinimumLength = 3, ErrorMessage = "O campo \"Assunto\" deve conter entre 3 e 150 caracteres.")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "O campo \"Assunto\" deve conter entre 2 e 100 caracteres.")]
     string Assunto,
 
     [Required(ErrorMessage = "O campo \"Data de Ocorrência\" deve ser preenchido.")]
@@ -47,7 +47,7 @@ public record EditarCompromissoViewModel(
     Guid Id,
 
     [Required(ErrorMessage = "O campo \"Assunto\" deve ser preenchido.")]
-    [StringLength(150, MinimumLength = 3, ErrorMessage = "O campo \"Assunto\" deve conter entre 3 e 150 caracteres.")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "O campo \"Assunto\" deve conter entre 2 e 100 caracteres.")]
     string Assunto,
 
     [Required(ErrorMessage = "O campo \"Data de Ocorrência\" deve ser preenchido.")]

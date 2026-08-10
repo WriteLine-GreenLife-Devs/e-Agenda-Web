@@ -32,6 +32,16 @@ public class ServicoTarefa
         return Result.Fail(new Error(erro).WithMetadata("Campo", campo));
     }
 
+    private static Result ValidarItem(ItemTarefa item)
+    {
+        List<string> erros = item.Validar();
+
+        if (erros.Count == 0)
+            return Result.Ok();
+
+        return Result.Fail(new Error(erros.First()).WithMetadata("Campo", nameof(ItemTarefa.Titulo)));
+    }
+
     public Result Cadastrar(CadastrarTarefaDto dto)
     {
         Tarefa tarefa = new Tarefa(dto.Titulo, dto.Prioridade);
@@ -41,6 +51,12 @@ public class ServicoTarefa
             foreach (var itemDto in dto.Itens)
             {
                 ItemTarefa item = new ItemTarefa(itemDto.Titulo);
+                item.VincularTarefa(tarefa.Id);
+
+                Result validacaoItem = ValidarItem(item);
+
+                if (validacaoItem.IsFailed)
+                    return validacaoItem;
 
                 if (itemDto.Concluido)
                     item.Concluir();
@@ -73,6 +89,12 @@ public class ServicoTarefa
             foreach (var itemDto in dto.Itens)
             {
                 ItemTarefa item = new ItemTarefa(itemDto.Titulo);
+                item.VincularTarefa(atualizada.Id);
+
+                Result validacaoItem = ValidarItem(item);
+
+                if (validacaoItem.IsFailed)
+                    return validacaoItem;
 
                 if (itemDto.Id != Guid.Empty)
                     item.Id = itemDto.Id;

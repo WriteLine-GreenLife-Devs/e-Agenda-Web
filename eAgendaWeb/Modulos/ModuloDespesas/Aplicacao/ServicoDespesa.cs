@@ -68,8 +68,16 @@ public class ServicoDespesa
 
     public Result Cadastrar(CadastrarDespesaDto dto)
     {
+        if (dto.CategoriasIds == null || dto.CategoriasIds.Count == 0)
+            return Result.Fail(new Error("A despesa deve conter pelo menos uma categoria vinculada.")
+                .WithMetadata("Campo", nameof(CadastrarDespesaDto.CategoriasIds)));
+
         if (!CategoriasExistem(dto.CategoriasIds))
             return Result.Fail("Uma ou mais categorias selecionadas não existem.");
+
+        DateTime dataOcorrencia = dto.DataOcorrencia == default
+            ? DateTime.Now.Date
+            : dto.DataOcorrencia;
 
         int parcelasTratadas = dto.FormaPagamento == FormaPagamento.Credito
             ? (dto.QuantidadeParcelas is null or <= 0 ? 1 : dto.QuantidadeParcelas.Value)
@@ -77,7 +85,7 @@ public class ServicoDespesa
 
         Despesa baseDespesa = new(
             dto.Descricao,
-            dto.DataOcorrencia,
+            dataOcorrencia,
             dto.Valor,
             dto.FormaPagamento,
             parcelasTratadas
@@ -97,7 +105,7 @@ public class ServicoDespesa
                     ? $"{dto.Descricao} ({i}/{parcelasTratadas})"
                     : dto.Descricao,
 
-                dataOcorrencia: dto.DataOcorrencia.AddMonths(i - 1),
+                dataOcorrencia: dataOcorrencia.AddMonths(i - 1),
 
                 valor: valorParcela,
 

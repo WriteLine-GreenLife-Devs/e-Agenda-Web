@@ -42,6 +42,9 @@ public sealed class Despesa : EntidadeBase<Despesa>
         if (Valor <= 0)
             erros.Add("O valor da despesa deve ser maior que zero.");
 
+        if (!Enum.IsDefined(FormaPagamento))
+            erros.Add("A forma de pagamento deve ser À Vista, Crédito ou Débito.");
+
         if (FormaPagamento == FormaPagamento.Credito)
         {
             if (!QuantidadeParcelas.HasValue)

@@ -77,8 +77,6 @@ public class TarefasController(
     [HttpPost]
     public ActionResult Cadastrar(CadastrarTarefaViewModel vm)
     {
-        vm.Itens?.RemoveAll(i => string.IsNullOrWhiteSpace(i.Titulo));
-
         if (!ModelState.IsValid)
             return View(vm);
 
@@ -113,8 +111,6 @@ public class TarefasController(
     [HttpPost]
     public ActionResult Editar(EditarTarefaViewModel vm)
     {
-        vm.Itens?.RemoveAll(i => string.IsNullOrWhiteSpace(i.Titulo));
-
         if (!ModelState.IsValid)
             return View(vm);
 

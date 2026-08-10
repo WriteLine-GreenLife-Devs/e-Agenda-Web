@@ -41,6 +41,9 @@ public class ItemTarefa : EntidadeBase<ItemTarefa>
         if (Titulo.Length < 2 || Titulo.Length > 100)
             erros.Add("O título do item deve possuir entre 2 e 100 caracteres.");
 
+        if (TarefaId == Guid.Empty)
+            erros.Add("O item deve estar vinculado a uma tarefa.");
+
         return erros;
     }
 

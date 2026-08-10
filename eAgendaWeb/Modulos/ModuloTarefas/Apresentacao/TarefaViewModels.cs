@@ -46,6 +46,7 @@ public record ItemTarefaViewModel(
     Guid Id,
 
     [Required(ErrorMessage = "O título do item é obrigatório.")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "O título do item deve ter entre 2 e 100 caracteres.")]
     string Titulo,
 
     bool Concluido
