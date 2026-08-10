@@ -100,12 +100,12 @@ Testes adicionais:
 A:
 [x] Contatos (4)
 [x] Categorias (2)
-[x] Tarefas (1)
+[x] Tarefas (4)
 
-- 7 testes adicionais
+- 10 testes adicionais
 
 Somando os casos da planilha e os testes adicionais:
-A -> 126 + 7 = 133
+A -> 126 + 10 = 136
 
 Para informações mais detalhadas sobre implementação, checar o Guia_TESTES.md em /e-Agenda-Web/ReferenciasTestes/Guia_TESTES.md
 
@@ -123,3 +123,6 @@ Categorias:
 
 Tarefas:
 - DeveVisualizar_DadosDaTarefa_ESeusItens
+- ConcluirItem_ComUmDeTresItens_DeveCalcularTrintaETresVirgulaTrintaETresPorCento
+- ConcluirItens_ComDoisDeTresItens_DeveCalcularSessentaESeisVirgulaSessentaESetePorCento
+- ConcluirItens_ComTresDeCincoItens_DeveCalcularSessentaPorCento

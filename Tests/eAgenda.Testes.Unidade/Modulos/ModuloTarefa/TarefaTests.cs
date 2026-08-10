@@ -182,6 +182,71 @@ public sealed class TarefaTests
     }
 
     [TestMethod]
+    public void ConcluirItem_ComUmDeTresItens_DeveCalcularTrintaETresVirgulaTrintaETresPorCento()
+    {
+        // Arranjo
+        Tarefa tarefa = new Tarefa("Estudar", PrioridadeTarefa.Normal);
+        ItemTarefa primeiroItem = new ItemTarefa("Ler capítulo 1");
+        tarefa.AdicionarItem(primeiroItem);
+        tarefa.AdicionarItem(new ItemTarefa("Ler capítulo 2"));
+        tarefa.AdicionarItem(new ItemTarefa("Resolver exercícios"));
+
+        // Ação
+        tarefa.ConcluirItem(primeiroItem.Id);
+
+        // Asserção
+        Assert.AreEqual(33.33m, tarefa.PercentualConcluido);
+        Assert.IsFalse(tarefa.StatusConclusao);
+        Assert.IsNull(tarefa.DataConclusao);
+    }
+
+    [TestMethod]
+    public void ConcluirItens_ComDoisDeTresItens_DeveCalcularSessentaESeisVirgulaSessentaESetePorCento()
+    {
+        // Arranjo
+        Tarefa tarefa = new Tarefa("Estudar", PrioridadeTarefa.Normal);
+        ItemTarefa primeiroItem = new ItemTarefa("Ler capítulo 1");
+        ItemTarefa segundoItem = new ItemTarefa("Ler capítulo 2");
+        tarefa.AdicionarItem(primeiroItem);
+        tarefa.AdicionarItem(segundoItem);
+        tarefa.AdicionarItem(new ItemTarefa("Resolver exercícios"));
+
+        // Ação
+        tarefa.ConcluirItem(primeiroItem.Id);
+        tarefa.ConcluirItem(segundoItem.Id);
+
+        // Asserção
+        Assert.AreEqual(66.67m, tarefa.PercentualConcluido);
+        Assert.IsFalse(tarefa.StatusConclusao);
+        Assert.IsNull(tarefa.DataConclusao);
+    }
+
+    [TestMethod]
+    public void ConcluirItens_ComTresDeCincoItens_DeveCalcularSessentaPorCento()
+    {
+        // Arranjo
+        Tarefa tarefa = new Tarefa("Estudar", PrioridadeTarefa.Normal);
+        ItemTarefa primeiroItem = new ItemTarefa("Ler capítulo 1");
+        ItemTarefa segundoItem = new ItemTarefa("Ler capítulo 2");
+        ItemTarefa terceiroItem = new ItemTarefa("Resolver exercícios");
+        tarefa.AdicionarItem(primeiroItem);
+        tarefa.AdicionarItem(segundoItem);
+        tarefa.AdicionarItem(terceiroItem);
+        tarefa.AdicionarItem(new ItemTarefa("Revisar conteúdo"));
+        tarefa.AdicionarItem(new ItemTarefa("Fazer resumo"));
+
+        // Ação
+        tarefa.ConcluirItem(primeiroItem.Id);
+        tarefa.ConcluirItem(segundoItem.Id);
+        tarefa.ConcluirItem(terceiroItem.Id);
+
+        // Asserção
+        Assert.AreEqual(60m, tarefa.PercentualConcluido);
+        Assert.IsFalse(tarefa.StatusConclusao);
+        Assert.IsNull(tarefa.DataConclusao);
+    }
+
+    [TestMethod]
     public void DesmarcarItem_DeveReabrirTarefaConcluida()
     {
         // Arranjo
