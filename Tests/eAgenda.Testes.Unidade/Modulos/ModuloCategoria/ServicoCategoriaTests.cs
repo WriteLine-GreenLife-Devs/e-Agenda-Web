@@ -85,6 +85,31 @@ public sealed class ServicoCategoriaTests
     }
 
     [TestMethod]
+    public void Cadastrar_ComTituloDuplicadoDiferindoMaiusculasMinusculas_DeveRetornarFalha()
+    {
+        // Arranjo
+        Mock<IRepositorioCategoria> repositorioCategoria = new();
+        Mock<IRepositorioDespesa> repositorioDespesa = new();
+        repositorioCategoria
+            .Setup(r => r.SelecionarTodos())
+            .Returns([new Categoria("Alimentação")]);
+
+        ServicoCategoria servico = new(
+            repositorioCategoria.Object,
+            repositorioDespesa.Object
+        );
+
+        // Ação
+        Result resultado = servico.Cadastrar(new CadastrarCategoriaDto("alimentação"));
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.AreEqual("Titulo", resultado.Errors.Single().Metadata["Campo"]);
+        Assert.Contains("Já existe", resultado.Errors.Single().Message);
+        repositorioCategoria.Verify(r => r.Cadastrar(It.IsAny<Categoria>()), Times.Never);
+    }
+
+    [TestMethod]
     public void Editar_ComDadosValidos_DeveAtualizarCategoria()
     {
         // Arranjo
@@ -134,6 +159,39 @@ public sealed class ServicoCategoriaTests
 
         // Ação
         Result resultado = servico.Editar(new EditarCategoriaDto(categoriaId, "Transporte"));
+
+        // Asserção
+        Assert.IsTrue(resultado.IsFailed);
+        Assert.AreEqual("Titulo", resultado.Errors.Single().Metadata["Campo"]);
+        Assert.Contains("Já existe", resultado.Errors.Single().Message);
+        repositorioCategoria.Verify(
+            r => r.Editar(It.IsAny<Guid>(), It.IsAny<Categoria>()),
+            Times.Never
+        );
+    }
+
+    [TestMethod]
+    public void Editar_ComTituloDuplicadoDiferindoMaiusculasMinusculas_DeveRetornarFalha()
+    {
+        // Arranjo
+        Guid categoriaId = Guid.NewGuid();
+        Categoria categoria = new("Alimentação") { Id = categoriaId };
+        Categoria categoriaExistente = new("Transporte");
+        Mock<IRepositorioCategoria> repositorioCategoria = new();
+        Mock<IRepositorioDespesa> repositorioDespesa = new();
+
+        repositorioCategoria.Setup(r => r.SelecionarPorId(categoriaId)).Returns(categoria);
+        repositorioCategoria
+            .Setup(r => r.SelecionarTodos())
+            .Returns([categoria, categoriaExistente]);
+
+        ServicoCategoria servico = new(
+            repositorioCategoria.Object,
+            repositorioDespesa.Object
+        );
+
+        // Ação
+        Result resultado = servico.Editar(new EditarCategoriaDto(categoriaId, "transporte"));
 
         // Asserção
         Assert.IsTrue(resultado.IsFailed);

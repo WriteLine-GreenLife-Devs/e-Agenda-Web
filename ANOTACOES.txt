@@ -96,4 +96,16 @@ B -> 47 + 38 + 32 + 25 = 142
 
 - 268 casos totais
 
+Testes adicionais:
+A:
+[x] Contatos (1)
+[x] Categorias (2)
+[x] Tarefas (1)
+
+- 4 testes adicionais
+
+Somando os casos da planilha e os testes adicionais:
+A -> 126 + 4 = 130
+B -> 142 + 0 = 142
+
 Para informações mais detalhadas sobre implementação, checar o Guia_TESTES.md em /e-Agenda-Web/ReferenciasTestes/Guia_TESTES.md

@@ -26,14 +26,15 @@ public class ServicoCategoria
     {
         return repositorioCategoria
             .SelecionarTodos()
-            .Any(c => c.Titulo == titulo);
+            .Any(c => string.Equals(c.Titulo, titulo, StringComparison.OrdinalIgnoreCase));
     }
 
     private bool VerificarTituloExistenteEditar(string titulo, Guid id)
     {
         return repositorioCategoria
             .SelecionarTodos()
-            .Any(c => c.Titulo == titulo && c.Id != id);
+            .Any(c => c.Id != id &&
+                string.Equals(c.Titulo, titulo, StringComparison.OrdinalIgnoreCase));
     }
 
     private static Result ValidarEntidade(Categoria categoria)
