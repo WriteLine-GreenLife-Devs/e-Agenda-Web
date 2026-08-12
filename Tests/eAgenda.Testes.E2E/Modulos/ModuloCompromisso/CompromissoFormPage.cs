@@ -30,7 +30,7 @@ public sealed class CompromissoFormPage(IPage page, string urlBase)
         await page.GetByLabel("Data de Ocorrência").FillAsync(dataOcorrencia.ToString("yyyy-MM-dd"));
         await page.GetByLabel("Hora de Início").FillAsync(horaInicio.ToString(@"hh\:mm"));
         await page.GetByLabel("Hora de Término").FillAsync(horaTermino.ToString(@"hh\:mm"));
-        await page.GetByLabel("Tipo de Compromisso").SelectOptionAsync(tipo);
+        await page.GetByLabel("Tipo de Compromisso").SelectOptionAsync(new SelectOptionValue { Label = tipo });
 
         if (tipo == "Presencial")
             await page.GetByLabel("Local").FillAsync(local);

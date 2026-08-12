@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Microsoft.Playwright;
 using eAgenda.Testes.E2E.Compartilhado;
 
 namespace eAgenda.Testes.E2E.Modulos.ModuloDespesas;
@@ -9,6 +10,9 @@ public sealed class DespesaE2ETests : E2ETestsBase
     [TestMethod]
     public async Task DeveCadastrar_Despesa_Basica()
     {
+        // garante uma categoria disponível para seleção
+        ExecutarComando("INSERT INTO TBCategoria (Id, Titulo) VALUES (@Id, @Titulo)", new { Id = Guid.NewGuid(), Titulo = "CategoriaTeste" });
+
         DespesaFormPage form = new(Page, UrlBase);
         DespesaListarPage listar = new(Page, UrlBase);
 
@@ -23,7 +27,10 @@ public sealed class DespesaE2ETests : E2ETestsBase
     [TestMethod]
     public async Task DeveEditar_Despesa()
     {
-        await ExecutarComando("INSERT INTO TBDespesa (Id, Descricao, DataOcorrencia, Valor, FormaPagamento, QuantidadeParcelas) VALUES (@Id, @Descricao, @Data, @Valor, @Forma, @Parcelas)", new { Id = Guid.NewGuid(), Descricao = "Original", Data = DateTime.Today, Valor = 50m, Forma = 1, Parcelas = (int?)null });
+        // cria categoria para o formulário
+        ExecutarComando("INSERT INTO TBCategoria (Id, Titulo) VALUES (@Id, @Titulo)", new { Id = Guid.NewGuid(), Titulo = "CategoriaTeste" });
+
+        ExecutarComando("INSERT INTO TBDespesa (Id, Descricao, DataOcorrencia, Valor, FormaPagamento, QuantidadeParcelas) VALUES (@Id, @Descricao, @Data, @Valor, @Forma, @Parcelas)", new { Id = Guid.NewGuid(), Descricao = "Original", Data = DateTime.Today, Valor = 50m, Forma = 1, Parcelas = (int?)null });
 
         DespesaListarPage listar = new(Page, UrlBase);
         DespesaFormPage form = new(Page, UrlBase);
@@ -41,7 +48,10 @@ public sealed class DespesaE2ETests : E2ETestsBase
     [TestMethod]
     public async Task DeveExcluir_Despesa()
     {
-        await ExecutarComando("INSERT INTO TBDespesa (Id, Descricao, DataOcorrencia, Valor, FormaPagamento, QuantidadeParcelas) VALUES (@Id, @Descricao, @Data, @Valor, @Forma, @Parcelas)", new { Id = Guid.NewGuid(), Descricao = "ParaExcluir", Data = DateTime.Today, Valor = 80m, Forma = 1, Parcelas = (int?)null });
+        // cria categoria para o formulário
+        ExecutarComando("INSERT INTO TBCategoria (Id, Titulo) VALUES (@Id, @Titulo)", new { Id = Guid.NewGuid(), Titulo = "CategoriaTeste" });
+
+        ExecutarComando("INSERT INTO TBDespesa (Id, Descricao, DataOcorrencia, Valor, FormaPagamento, QuantidadeParcelas) VALUES (@Id, @Descricao, @Data, @Valor, @Forma, @Parcelas)", new { Id = Guid.NewGuid(), Descricao = "ParaExcluir", Data = DateTime.Today, Valor = 80m, Forma = 1, Parcelas = (int?)null });
 
         DespesaListarPage listar = new(Page, UrlBase);
         await listar.IrParaAsync();

@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using System.Globalization;
 
 namespace eAgenda.Testes.E2E.Modulos.ModuloDespesas;
 
@@ -20,11 +21,20 @@ public sealed class DespesaFormPage(IPage page, string urlBase)
     {
         await page.GetByLabel("Descrição").FillAsync(descricao);
         await page.GetByLabel("Data").FillAsync(data.ToString("yyyy-MM-dd"));
-        await page.GetByLabel("Valor").FillAsync(valor.ToString());
-        await page.GetByLabel("Pagamento").SelectOptionAsync(formaPagamento);
+        await page.GetByLabel("Valor").FillAsync(valor.ToString(CultureInfo.InvariantCulture));
+        await page.Locator("#formaPagamentoSelect").SelectOptionAsync(new SelectOptionValue { Value = formaPagamento });
 
         if (parcelas.HasValue)
             await page.GetByLabel("Parcelas").FillAsync(parcelas.Value.ToString());
+
+        // garante ao menos uma categoria selecionada (select2 substitui UI, seleciona o original)
+        var categoriasCount = await page.Locator("#listaCategorias option").CountAsync();
+        if (categoriasCount > 1)
+        {
+            var primeira = await page.Locator("#listaCategorias option").Nth(1).GetAttributeAsync("value");
+            if (!string.IsNullOrEmpty(primeira))
+                await page.Locator("#listaCategorias").SelectOptionAsync(primeira);
+        }
     }
 
     public async Task ConfirmarAsync()

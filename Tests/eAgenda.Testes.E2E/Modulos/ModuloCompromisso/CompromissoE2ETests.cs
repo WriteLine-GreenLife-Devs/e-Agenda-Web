@@ -38,7 +38,7 @@ public sealed class CompromissoE2ETests : E2ETestsBase
     public async Task DeveEditar_Compromisso()
     {
         // Arranjo
-        await ExecutarComando("INSERT INTO TBCompromisso (Id, Assunto, DataOcorrencia, HoraInicio, HoraTermino, TipoCompromisso, Local, Link, ContatoId) VALUES (@Id, @Assunto, @Data, @Hi, @Ht, @Tipo, @Local, @Link, @Contato)", new { Id = Guid.NewGuid(), Assunto = "Original", Data = DateTime.Today.AddDays(2), Hi = new TimeSpan(10,0,0), Ht = new TimeSpan(11,0,0), Tipo = "Presencial", Local = "Sala", Link = (string?)null, Contato = (Guid?)null });
+        ExecutarComando("INSERT INTO TBCompromisso (Id, Assunto, DataOcorrencia, HoraInicio, HoraTermino, TipoCompromisso, Local, Link, ContatoId) VALUES (@Id, @Assunto, @Data, @Hi, @Ht, @Tipo, @Local, @Link, @Contato)", new { Id = Guid.NewGuid(), Assunto = "Original", Data = DateTime.Today.AddDays(2), Hi = new TimeSpan(10,0,0), Ht = new TimeSpan(11,0,0), Tipo = "Presencial", Local = "Sala", Link = (string?)null, Contato = (Guid?)null });
 
         CompromissoFormPage form = new(Page, UrlBase);
         CompromissoListarPage listar = new(Page, UrlBase);
@@ -56,7 +56,7 @@ public sealed class CompromissoE2ETests : E2ETestsBase
     [TestMethod]
     public async Task DeveExcluir_Compromisso()
     {
-        await ExecutarComando("INSERT INTO TBCompromisso (Id, Assunto, DataOcorrencia, HoraInicio, HoraTermino, TipoCompromisso, Local, Link, ContatoId) VALUES (@Id, @Assunto, @Data, @Hi, @Ht, @Tipo, @Local, @Link, @Contato)", new { Id = Guid.NewGuid(), Assunto = "ParaExcluir", Data = DateTime.Today.AddDays(3), Hi = new TimeSpan(9,0,0), Ht = new TimeSpan(10,0,0), Tipo = "Presencial", Local = "Sala", Link = (string?)null, Contato = (Guid?)null });
+        ExecutarComando("INSERT INTO TBCompromisso (Id, Assunto, DataOcorrencia, HoraInicio, HoraTermino, TipoCompromisso, Local, Link, ContatoId) VALUES (@Id, @Assunto, @Data, @Hi, @Ht, @Tipo, @Local, @Link, @Contato)", new { Id = Guid.NewGuid(), Assunto = "ParaExcluir", Data = DateTime.Today.AddDays(3), Hi = new TimeSpan(9,0,0), Ht = new TimeSpan(10,0,0), Tipo = "Presencial", Local = "Sala", Link = (string?)null, Contato = (Guid?)null });
 
         CompromissoListarPage listar = new(Page, UrlBase);
         CompromissoExcluirPage excluir = new(Page);
