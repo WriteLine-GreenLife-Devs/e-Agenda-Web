@@ -5,7 +5,7 @@ namespace eAgenda.Testes.E2E.Modulos.ModuloCompromisso;
 
 public sealed class CompromissoListarPage(IPage page, string urlBase)
 {
-    public string Url => $"{urlBase}/Compromissos/Listar";
+    public string Url => $"{urlBase}/Compromisso/Listar";
 
     public ILocator EstadoVazio => page.GetByText(
         "Nenhum compromisso cadastrado.",
@@ -26,22 +26,29 @@ public sealed class CompromissoListarPage(IPage page, string urlBase)
 
     public async Task EditarAsync(string assunto)
     {
-        await CardPorAssunto(assunto).GetByRole(
+        var editLink = CardPorAssunto(assunto).GetByRole(
             AriaRole.Link,
             new() { Name = "Editar", Exact = true }
-        ).ClickAsync();
+        );
+        await editLink.WaitForAsync();
+        await editLink.ClickAsync();
     }
 
     public async Task ExcluirAsync(string assunto)
     {
-        await CardPorAssunto(assunto).GetByRole(
+        var deleteLink = CardPorAssunto(assunto).GetByRole(
             AriaRole.Link,
             new() { Name = "Excluir", Exact = true }
-        ).ClickAsync();
+        );
+        await deleteLink.WaitForAsync();
+        await deleteLink.ClickAsync();
     }
 
     private ILocator CardPorAssunto(string assunto)
     {
-        return page.Locator(".card").Filter(new() { Has = Assunto(assunto) });
+        // Tenta localizar o container do compromisso a partir do heading
+        var heading = Assunto(assunto);
+        // Procurar pelo ancestor com classe 'card' para ser mais resiliente
+        return heading.Locator($"xpath=ancestor::div[contains(@class,'card')]");
     }
 }

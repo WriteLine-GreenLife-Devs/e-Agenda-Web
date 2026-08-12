@@ -4,7 +4,7 @@ namespace eAgenda.Testes.E2E.Modulos.ModuloCompromisso;
 
 public sealed class CompromissoFormPage(IPage page, string urlBase)
 {
-    public string UrlCadastrar => $"{urlBase}/Compromissos/Cadastrar";
+    public string UrlCadastrar => $"{urlBase}/Compromisso/Cadastrar";
 
     public ILocator ErroDeValidacao(string mensagem) => page.GetByText(
         mensagem,
@@ -13,7 +13,24 @@ public sealed class CompromissoFormPage(IPage page, string urlBase)
 
     public async Task IrParaCadastroAsync()
     {
-        await page.GotoAsync(UrlCadastrar);
+        // Navega primeiro para a listagem e clica no link "Cadastrar Novo"
+        // Navega diretamente para a página de cadastro garantindo que o carregamento de rede termine
+        var response = await page.GotoAsync(UrlCadastrar, new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
+        Console.WriteLine($"[DEBUG] Navegação para {UrlCadastrar} retornou status: {response?.Status}");
+
+        // Aguarda o formulário principal estar presente no DOM
+        // Em caso de falha, registramos o HTML retornado para debug
+        try
+        {
+            await page.WaitForSelectorAsync("form.card");
+        }
+        catch (Exception)
+        {
+            string html = await page.ContentAsync();
+            Console.WriteLine("[DEBUG] Conteúdo da página Cadastrar (início):");
+            Console.WriteLine(html.Length > 2000 ? html.Substring(0, 2000) : html);
+            throw;
+        }
     }
 
     public async Task PreencherAsync(
@@ -26,16 +43,38 @@ public sealed class CompromissoFormPage(IPage page, string urlBase)
         string link = ""
     )
     {
-        await page.GetByLabel("Assunto").FillAsync(assunto);
-        await page.GetByLabel("Data de Ocorrência").FillAsync(dataOcorrencia.ToString("yyyy-MM-dd"));
-        await page.GetByLabel("Hora de Início").FillAsync(horaInicio.ToString(@"hh\:mm"));
-        await page.GetByLabel("Hora de Término").FillAsync(horaTermino.ToString(@"hh\:mm"));
-        await page.GetByLabel("Tipo de Compromisso").SelectOptionAsync(new SelectOptionValue { Label = tipo });
+        var assuntoLocator = page.Locator("input[name=Assunto]");
+        await assuntoLocator.WaitForAsync();
+        await assuntoLocator.FillAsync(assunto);
+
+        var dataLocator = page.Locator("input[name=DataOcorrencia]");
+        await dataLocator.WaitForAsync();
+        await dataLocator.FillAsync(dataOcorrencia.ToString("yyyy-MM-dd"));
+
+        var horaInicioLocator = page.Locator("input[name=HoraInicio]");
+        await horaInicioLocator.WaitForAsync();
+        await horaInicioLocator.FillAsync(horaInicio.ToString(@"hh\:mm"));
+
+        var horaTerminoLocator = page.Locator("input[name=HoraTermino]");
+        await horaTerminoLocator.WaitForAsync();
+        await horaTerminoLocator.FillAsync(horaTermino.ToString(@"hh\:mm"));
+
+        var tipoLocator = page.Locator("select[name=TipoCompromisso]");
+        await tipoLocator.WaitForAsync();
+        await tipoLocator.SelectOptionAsync(new SelectOptionValue { Label = tipo });
 
         if (tipo == "Presencial")
-            await page.GetByLabel("Local").FillAsync(local);
+        {
+            var localLocator = page.Locator("input[name=Local]");
+            await localLocator.WaitForAsync();
+            await localLocator.FillAsync(local);
+        }
         else
-            await page.GetByLabel("Link").FillAsync(link);
+        {
+            var linkLocator = page.Locator("input[name=Link]");
+            await linkLocator.WaitForAsync();
+            await linkLocator.FillAsync(link);
+        }
     }
 
     public async Task ConfirmarAsync()

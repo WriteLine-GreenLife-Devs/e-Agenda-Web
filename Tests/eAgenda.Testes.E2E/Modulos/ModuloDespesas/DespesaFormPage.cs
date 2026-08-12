@@ -34,6 +34,24 @@ public sealed class DespesaFormPage(IPage page, string urlBase)
             var primeira = await page.Locator("#listaCategorias option").Nth(1).GetAttributeAsync("value");
             if (!string.IsNullOrEmpty(primeira))
                 await page.Locator("#listaCategorias").SelectOptionAsync(primeira);
+
+            // tentar também selecionar via UI do Select2 (se presente)
+            try
+            {
+                var select2 = page.Locator(".select2-container");
+                if (await select2.CountAsync() > 0)
+                {
+                    var texto = await page.Locator("#listaCategorias option").Nth(1).InnerTextAsync();
+                    await select2.First.ClickAsync();
+                    // aguarda listbox aparecer e clica na opção com o texto
+                    var opc = page.Locator($".select2-results__option:has-text(\"{texto}\")");
+                    await opc.First.ClickAsync();
+                }
+            }
+            catch
+            {
+                // ignore - fallback já selecionou o option no elemento original
+            }
         }
     }
 

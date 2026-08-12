@@ -9,8 +9,10 @@ public static class ModelStateExtensions
     {
         foreach (IError erro in result.Errors)
         {
-            string campo =
-                erro.Metadata["Campo"] is string ? erro.Metadata["Campo"].ToString()! : string.Empty;
+            string campo = string.Empty;
+
+            if (erro.Metadata != null && erro.Metadata.ContainsKey("Campo") && erro.Metadata["Campo"] is string)
+                campo = erro.Metadata["Campo"].ToString()!;
 
             modelState.AddModelError(campo, erro.Message);
         }

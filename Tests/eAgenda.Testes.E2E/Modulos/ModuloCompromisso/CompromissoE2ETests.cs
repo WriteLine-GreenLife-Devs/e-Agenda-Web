@@ -64,7 +64,7 @@ public sealed class CompromissoE2ETests : E2ETestsBase
         await listar.IrParaAsync();
         await listar.ExcluirAsync("ParaExcluir");
 
-        await Expect(Page).ToHaveURLAsync(new Regex($"{Regex.Escape(UrlBase)}/Compromissos/Excluir/.*"));
+        await Expect(Page).ToHaveURLAsync(new Regex($"{Regex.Escape(UrlBase)}/Compromisso/Excluir/.*"));
         await Expect(excluir.MensagemConfirmacao).ToBeVisibleAsync();
         await excluir.ConfirmarAsync();
 
